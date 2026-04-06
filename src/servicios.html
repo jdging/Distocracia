@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servicios — JDG Sistemas & Estructuras</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/site.css">
+
+  <style>
+    /* ── LAYOUT ── */
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 7rem 2rem 5rem;
+    }
+
+    /* ── HERO ── */
+    .page-hero {
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+
+    .hero-label {
+      font-size: 0.63rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .page-intro {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.9;
+      max-width: 540px;
+    }
+
+    /* ── SECCIÓN DE SERVICIO ── */
+    .service-section {
+      padding: 3.5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 3rem;
+    }
+
+    .service-section:last-of-type {
+      border-bottom: none;
+    }
+
+    /* Columna izquierda: número + título */
+    .service-left {}
+
+    .service-num {
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .service-name {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 300;
+      line-height: 1.15;
+      color: var(--text);
+    }
+
+    /* Columna derecha: contenido */
+    .service-right {}
+
+    .service-desc {
+      font-size: 0.75rem;
+      color: var(--text);
+      line-height: 1.9;
+      margin-bottom: 1.8rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* Bloque de items dentro de un servicio (alcance, normativas, etc.) */
+    .service-block {
+      margin-bottom: 1.6rem;
+    }
+
+    .block-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    .block-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .block-list li {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.7;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .block-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--border);
+    }
+
+    /* Tags de tecnología/normativa */
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .tag.hi {
+      border-color: rgba(144, 152, 184, 0.4);
+      color: var(--accent);
+    }
+
+    /* ── CTA FINAL ── */
+    .page-cta {
+      margin-top: 4rem;
+      padding: 2.5rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cta-text h3 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 0.4rem;
+    }
+
+    .cta-text p {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .service-section {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+      .page-cta {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <span class="nav-logo">
+      <!-- ACOTACIÓN PARA R.P.: Logo blanco sobre fondo oscuro. -->
+      <img src="../marca/jdg/logo.svg" alt="JDG">
+    </span>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="servicios.html" class="active">Servicios</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><a class="nav-portal" href="portal/index.html">Portal →</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- ── HERO ── -->
+    <div class="page-hero">
+      <p class="hero-label">JDG · Servicios profesionales</p>
+      <h1 class="page-title">Cálculo, supervisión<br>y sistemas.</h1>
+      <p class="page-intro">
+        Ingeniería estructural en acero y hormigón, combinada con el desarrollo de herramientas y plataformas digitales propias. Un perfil técnico con capacidad de ejecutar proyectos de punta a punta.
+      </p>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         01 — DISEÑO Y CÁLCULO ESTRUCTURAL
+         ══════════════════════════════════════════════════════════ -->
+    <div class="service-section">
+      <div class="service-left">
+        <p class="service-num">01</p>
+        <h2 class="service-name">Diseño y cálculo estructural</h2>
+      </div>
+
+      <div class="service-right">
+        <p class="service-desc">
+          Análisis y dimensionamiento de estructuras de acero y hormigón armado para proyectos industriales, edilicios e infraestructura. El trabajo abarca desde la definición del sistema estructural hasta la documentación de ingeniería de detalle, siempre referenciado a normativa vigente.
+        </p>
+
+        <div class="service-block">
+          <p class="block-label">Alcance</p>
+          <ul class="block-list">
+            <li>Ingeniería conceptual, básica, de detalle, fabricación y montaje</li>
+            <li>Estructuras metálicas: pórticos, reticuladas, mixtas acero-hormigón</li>
+            <li>Hormigón armado: losas, vigas, columnas, muros y fundaciones</li>
+            <li>Memorias de cálculo y planos de ingeniería</li>
+            <li>Especificaciones técnicas para licitación y contratos</li>
+          </ul>
+        </div>
+
+        <div class="service-block">
+          <p class="block-label">Normativas</p>
+          <div class="tag-row">
+            <span class="tag hi">CIRSOC 301</span>
+            <span class="tag hi">CIRSOC 201</span>
+            <span class="tag hi">CIRSOC 102</span>
+            <span class="tag">AISC 360</span>
+            <span class="tag">ACI 318</span>
+          </div>
+        </div>
+
+        <div class="service-block">
+          <p class="block-label">Software</p>
+          <div class="tag-row">
+            <span class="tag">SAP2000</span>
+            <span class="tag">IDEA StatiCa</span>
+            <span class="tag">Tekla Structures</span>
+            <span class="tag">AutoCAD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         02 — SUPERVISIÓN Y OFICINA TÉCNICA
+         ══════════════════════════════════════════════════════════ -->
+    <div class="service-section">
+      <div class="service-left">
+        <p class="service-num">02</p>
+        <h2 class="service-name">Supervisión y oficina técnica</h2>
+      </div>
+
+      <div class="service-right">
+        <p class="service-desc">
+          Participación en la etapa de obra o contrato como referente técnico: auditoría de propuestas, control de documentación y verificación de que la ejecución se ajusta a los documentos del proyecto. Experiencia en obras industriales, plantas de proceso e infraestructura portuaria.
+        </p>
+
+        <div class="service-block">
+          <p class="block-label">Alcance</p>
+          <ul class="block-list">
+            <li>Auditoría y validación de memorias de cálculo de terceros</li>
+            <li>Revisión técnica de propuestas y ofertas de contratistas</li>
+            <li>Control de planos de detalle, montaje y taller</li>
+            <li>Inspección en taller y campo</li>
+            <li>Informes de avance y no-conformidades</li>
+            <li>Rehabilitación y refuerzo estructural: evaluación y documentación</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         03 — SISTEMAS DE GESTIÓN
+         ══════════════════════════════════════════════════════════ -->
+    <div class="service-section">
+      <div class="service-left">
+        <p class="service-num">03</p>
+        <h2 class="service-name">Sistemas de gestión</h2>
+      </div>
+
+      <div class="service-right">
+        <p class="service-desc">
+          Diseño e implementación de plataformas operativas sobre Google Workspace. Desde la arquitectura de datos hasta los dashboards de monitoreo. Soluciones construidas sobre infraestructura 100% gratuita, orientadas a pequeñas y medianas organizaciones que necesitan sistemas robustos sin costos de licencia.
+        </p>
+
+        <div class="service-block">
+          <p class="block-label">Alcance</p>
+          <ul class="block-list">
+            <li>Arquitectura de datos en Google Sheets (bases relacionales, multi-proyecto)</li>
+            <li>Automatizaciones con Google Apps Script: triggers, webhooks, emails transaccionales</li>
+            <li>Apps móviles para operadores con AppSheet</li>
+            <li>Dashboards analíticos con Looker Studio</li>
+            <li>Portales web en GitHub Pages integrados a los sistemas</li>
+            <li>Generación automática de PDFs y reportes en Google Drive</li>
+          </ul>
+        </div>
+
+        <div class="service-block">
+          <p class="block-label">Stack</p>
+          <div class="tag-row">
+            <span class="tag hi">Google Apps Script</span>
+            <span class="tag hi">AppSheet</span>
+            <span class="tag hi">Looker Studio</span>
+            <span class="tag">Google Sheets</span>
+            <span class="tag">Google Drive API</span>
+            <span class="tag">Google Calendar API</span>
+            <span class="tag">GitHub Pages</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         04 — SOFTWARE DE INGENIERÍA
+         ══════════════════════════════════════════════════════════ -->
+    <div class="service-section">
+      <div class="service-left">
+        <p class="service-num">04</p>
+        <h2 class="service-name">Software de ingeniería</h2>
+      </div>
+
+      <div class="service-right">
+        <p class="service-desc">
+          Herramientas de cálculo estructural propias, que corren directamente en el browser. Sin instalación, sin licencias. Desarrolladas sobre normativa CIRSOC, con interfaz técnica orientada a ingenieros. Accesibles desde el portal, en continua expansión.
+        </p>
+
+        <div class="service-block">
+          <p class="block-label">Módulos disponibles</p>
+          <ul class="block-list">
+            <li>Analizador de Esbelteces — verificación λ según CIRSOC 301-18 (W, UPN, L, 2L)</li>
+          </ul>
+        </div>
+
+        <div class="service-block">
+          <p class="block-label">En desarrollo</p>
+          <ul class="block-list">
+            <li>Carga de viento · Cargas de cubierta · Cargas de nieve (CIRSOC 102)</li>
+            <li>Dimensionamiento de vigas y correas de acero</li>
+            <li>Verificación de anclajes y diseño de columnas</li>
+          </ul>
+        </div>
+
+        <a class="btn-primary" href="portal/index.html" style="display:inline-block; margin-top: 1.2rem;">
+          Acceder al portal →
+        </a>
+      </div>
+    </div>
+
+    <!-- ── CTA FINAL ── -->
+    <div class="page-cta">
+      <div class="cta-text">
+        <h3>¿Tenés un proyecto en mente?</h3>
+        <p>Consultas sin compromiso. Respondo en menos de 24 h.</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn-primary" href="contacto.html">Contacto</a>
+        <a class="btn-ghost" href="about.html">About →</a>
+      </div>
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <span class="footer-brand">JDG — Sistemas & Estructuras</span>
+    <ul class="footer-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="mailto:ing.guzmanjuandavid@gmail.com">Email</a></li>
+      <li><a href="https://www.linkedin.com/in/ingjdg/" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="https://github.com/jdging" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <p class="footer-copy">Juan David Guzmán · Ingeniero Civil · Rosario, Argentina</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — JDG Sistemas & Estructuras</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/site.css">
+
+  <style>
+    /* ── LAYOUT ── */
+    .page-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 7rem 2rem 5rem;
+    }
+
+    /* ── HERO DEL ABOUT ── */
+    .about-hero {
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .about-hero-left { flex: 1; }
+
+    .hero-label {
+      font-size: 0.63rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .about-name {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .about-tagline {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      line-height: 1.9;
+      max-width: 460px;
+    }
+
+    /* Botón descargar CV */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--warm);
+      border: 1px solid rgba(201, 185, 154, 0.35);
+      padding: 0.65rem 1.2rem;
+      border-radius: 2px;
+      transition: background 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .btn-download:hover {
+      background: rgba(201, 185, 154, 0.08);
+      border-color: var(--warm);
+    }
+
+    /* ── SECCIONES ── */
+    .cv-section {
+      padding: 2.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cv-section:last-child { border-bottom: none; }
+
+    /* Override: site.css usa 3rem; aquí necesitamos 2rem */
+    .section-header { margin-bottom: 2rem; }
+    /* Override: site.css usa 0.63rem; aquí usamos 0.6rem */
+    .section-label { font-size: 0.6rem; }
+
+    /* ── RESUMEN ── */
+    .summary-text {
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.9;
+      max-width: 680px;
+      border-left: 2px solid var(--navy);
+      padding-left: 1.2rem;
+    }
+
+    /* ── COMPETENCIAS ── */
+    .competence-block { margin-bottom: 1.4rem; }
+    .competence-block:last-of-type { margin-bottom: 0; }
+
+    .comp-cat {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .comp-text {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* Tags de skills */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 1.5rem;
+    }
+
+    .skill-tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .skill-tag.hi {
+      border-color: rgba(144, 152, 184, 0.4);
+      color: var(--accent);
+    }
+
+    /* ── EXPERIENCIA ── */
+    .entry { margin-bottom: 2rem; }
+    .entry:last-child { margin-bottom: 0; }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.15rem;
+    }
+
+    .entry-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .entry-meta {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .entry-company {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .entry ul { padding-left: 1rem; }
+    .entry li {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2px;
+    }
+    .entry li::marker { color: var(--border); }
+
+    /* ── PROYECTO DESTACADO ── */
+    .project-box {
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      background: var(--surface);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+
+    .project-name {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .project-role {
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .project-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 0.8rem;
+    }
+
+    .project-box ul { padding-left: 1rem; }
+    .project-box li {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2px;
+    }
+    .project-box li::marker { color: var(--border); }
+
+    .project-stack {
+      font-size: 0.6rem;
+      letter-spacing: 0.04em;
+      color: var(--border);
+      margin-top: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ── EDUCACIÓN ── */
+    .edu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.7rem;
+    }
+    .edu-item:last-child { margin-bottom: 0; }
+
+    .edu-degree {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .edu-inst {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .edu-date {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── IDIOMAS ── */
+    .lang-row { display: flex; gap: 3rem; flex-wrap: wrap; }
+
+    .lang-item .lang-name {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .lang-item .lang-level {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .page-wrap { padding: 6rem 1.5rem 4rem; }
+      .about-hero { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <span class="nav-logo">
+      <img src="../marca/jdg/logo.svg" alt="JDG">
+    </span>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="servicios.html">Servicios</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><a class="nav-portal" href="portal/index.html">Portal →</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- ── HERO ── -->
+    <div class="about-hero">
+      <div class="about-hero-left">
+        <p class="hero-label">Ingeniero Civil · Rosario, Argentina</p>
+        <h1 class="about-name">Juan David<br>Guzmán</h1>
+        <p class="about-tagline">
+          Diseño estructural · Sistemas de gestión · Software de ingeniería<br>
+          Estructuras de acero y hormigón · Google Workspace · Python
+        </p>
+      </div>
+      <!-- Descargar CV: apunta al HTML del CV original, fuerza el nombre CVGuzman.html -->
+      <a class="btn-download"
+         href="../ejemplo/CV_JuanDavidGuzman_TodoTerreno.html"
+         download="CVGuzman.html">
+        ↓ &nbsp;Descargar CV
+      </a>
+    </div>
+
+    <!-- ── RESUMEN ── -->
+    <div class="cv-section">
+      <div class="section-header">
+        <span class="section-label">Resumen</span>
+        <div class="section-line"></div>
+      </div>
+      <p class="summary-text">
+        Ingeniero Civil con especialización en estructuras y más de 4 años de experiencia en proyectos industriales. Perfil híbrido: combina cálculo estructural de acero y hormigón con diseño e implementación de sistemas de gestión completos — desde la arquitectura de datos hasta los dashboards de operaciones. Construye soluciones propias con Google Apps Script, AppSheet, Looker Studio y Python sobre infraestructura 100% gratuita. Docente universitario activo en la UNR. Inglés B2 certificado.
+      </p>
+    </div>
+
+    <!-- ── COMPETENCIAS ── -->
+    <div class="cv-section">
+      <div class="section-header">
+        <span class="section-label">Competencias técnicas</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="competence-block">
+        <p class="comp-cat">Cálculo y Diseño Estructural</p>
+        <p class="comp-text">Estructuras de acero y hormigón armado. Normativas CIRSOC, AISC, ACI. Proyectos en etapas conceptual, básica, detalle, fabricación y montaje.</p>
+      </div>
+
+      <div class="competence-block">
+        <p class="comp-cat">Gestión y Oficina Técnica</p>
+        <p class="comp-text">Auditoría y validación técnica de memorias de cálculo y propuestas de contratistas. Definición de alcances técnicos y elaboración de especificaciones para licitación.</p>
+      </div>
+
+      <div class="competence-block">
+        <p class="comp-cat">Desarrollo de Sistemas de Gestión</p>
+        <p class="comp-text">Diseño de arquitecturas multi-proyecto con Google Apps Script. Bases de datos relacionales en Google Sheets. Aplicaciones móviles para operadores con AppSheet. Dashboards con Looker Studio. Portales web en GitHub Pages. Generación automatizada de PDFs y emails transaccionales.</p>
+      </div>
+
+      <div class="competence-block">
+        <p class="comp-cat">Supervisión de Obra</p>
+        <p class="comp-text">Control de cumplimiento de contratos, rehabilitación estructural, inspección en taller y campo.</p>
+      </div>
+
+      <div class="skills-grid">
+        <span class="skill-tag hi">CIRSOC</span>
+        <span class="skill-tag hi">AISC</span>
+        <span class="skill-tag hi">ACI</span>
+        <span class="skill-tag">SAP2000</span>
+        <span class="skill-tag">IDEA StatiCa</span>
+        <span class="skill-tag">Tekla Structures</span>
+        <span class="skill-tag">AutoCAD 2D/3D</span>
+        <span class="skill-tag hi">Google Apps Script</span>
+        <span class="skill-tag hi">Python</span>
+        <span class="skill-tag">Excel VBA</span>
+        <span class="skill-tag">AppSheet</span>
+        <span class="skill-tag">Looker Studio</span>
+        <span class="skill-tag">HTML/CSS</span>
+        <span class="skill-tag">GitHub Pages</span>
+        <span class="skill-tag">Google Calendar API</span>
+        <span class="skill-tag">Google Drive API</span>
+        <span class="skill-tag">Modelado BIM</span>
+      </div>
+    </div>
+
+    <!-- ── EXPERIENCIA ── -->
+    <div class="cv-section">
+      <div class="section-header">
+        <span class="section-label">Experiencia</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">Ingeniero Estructural</span>
+          <span class="entry-meta">Ene 2024 — Presente</span>
+        </div>
+        <p class="entry-company">Excel Consulting · Rosario, Argentina</p>
+        <ul>
+          <li>Diseño y cálculo de estructuras metálicas y de hormigón para proyectos industriales: plantas de bioenergía, terminales portuarias e instalaciones de almacenamiento.</li>
+          <li>Elaboración de especificaciones técnicas, memorias de cálculo y planos de ingeniería básica, detalle y montaje, aplicando normativas CIRSOC y estándares internacionales.</li>
+          <li>Auditoría y validación técnica de memorias de cálculo y propuestas de contratistas.</li>
+          <li>Desarrollo de software de ingeniería propio (Python y Excel VBA): aplicaciones web para cálculo estructural y herramientas internas que redujeron tareas de 8 horas a segundos.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">Docente — Estática Aplicada</span>
+          <span class="entry-meta">Nov 2022 — Presente</span>
+        </div>
+        <p class="entry-company">Universidad Nacional de Rosario (UNR) · Fac. de Ingeniería Civil</p>
+        <ul>
+          <li>Dictado de clases prácticas de Estática en la Facultad de Ingeniería Civil (UNR).</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">Ingeniero Estructural</span>
+          <span class="entry-meta">Mar 2023 — Dic 2023</span>
+        </div>
+        <p class="entry-company">AC Ingeniería · Rosario, Argentina</p>
+        <ul>
+          <li>Diseño y cálculo de estructuras de acero: torre de acceso de 34 m con manejo de 12 toneladas en proceso de ensamblaje en 3 etapas.</li>
+          <li>Cálculo, diseño y control de fabricación de elementos prefabricados de hormigón (400 m²), banderolas y pórticos viales.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">Ingeniero Civil</span>
+          <span class="entry-meta">Ago 2021 — Feb 2023</span>
+        </div>
+        <p class="entry-company">Deprop · Rosario, Argentina</p>
+        <ul>
+          <li>Supervisión y monitoreo de obras civiles: control de contratos, reparaciones de edificios y rehabilitación estructural.</li>
+          <li>Desarrollo y verificación de diseños estructurales para proyectos de construcción.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">Pasante de Ingeniería</span>
+          <span class="entry-meta">Mar 2021 — Jun 2021</span>
+        </div>
+        <p class="entry-company">Ingeniería y Pilotes · Rosario, Argentina</p>
+        <ul>
+          <li>Asistencia en procesos de licitación y supervisión de obras.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── PROYECTO DESTACADO ── -->
+    <div class="cv-section">
+      <div class="section-header">
+        <span class="section-label">Proyecto propio destacado</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="project-box">
+        <div class="project-header">
+          <span class="project-name">Wash Motion — Sistema de Gestión para Red de Lavaderos</span>
+          <span class="project-role">Diseño, desarrollo e implementación</span>
+        </div>
+        <p class="project-desc">
+          Plataforma operativa completa para una red de lavaderos móviles con modelo de franquicia. Arquitectura distribuida en 3 proyectos de Apps Script independientes, base de datos relacional de 12+ tablas en Google Sheets, y portales web diferenciados por rol.
+        </p>
+        <ul>
+          <li>Sistema de reservas en tiempo real con detección automática de conflictos, oferta de slots alternativos y expiración tokenizada a 15 minutos.</li>
+          <li>Integración con Google Calendar (creación/cancelación automática de eventos) y Google Forms (cancelaciones y valoraciones post-servicio).</li>
+          <li>App móvil para operadores en AppSheet: check-in, registro de servicios, carga de comprobantes de pago.</li>
+          <li>Dashboards analíticos en Looker Studio: ocupación por franja horaria, rendimiento por operador, tasas de no-show, ingresos por sucursal y método de pago.</li>
+          <li>Módulo financiero: rendiciones automáticas con PDFs en Google Drive, cálculo de comisiones, emails diferenciados por rol y frecuencia.</li>
+          <li>Emails transaccionales HTML: confirmación con botón "Guardar en calendario", email VIP con ficha del operador, notificación de conflictos, link de valoración post-servicio.</li>
+        </ul>
+        <p class="project-stack">
+          Google Apps Script (Web Apps + Webhooks + Triggers) · Google Sheets (12+ tablas) · Google Calendar API · Google Drive API · AppSheet · Looker Studio · HTML/CSS · GitHub Pages
+        </p>
+      </div>
+    </div>
+
+    <!-- ── EDUCACIÓN ── -->
+    <div class="cv-section">
+      <div class="section-header">
+        <span class="section-label">Educación</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="edu-item">
+        <div>
+          <p class="edu-degree">Especialización en Ingeniería Estructural</p>
+          <p class="edu-inst">UNR — Universidad Nacional de Rosario</p>
+        </div>
+        <span class="edu-date">2023 — 2024</span>
+      </div>
+
+      <div class="edu-item">
+        <div>
+          <p class="edu-degree">Ingeniería Civil</p>
+          <p class="edu-inst">UNR — Universidad Nacional de Rosario</p>
+        </div>
+        <span class="edu-date">2015 — 2021</span>
+      </div>
+    </div>
+
+    <!-- ── IDIOMAS ── -->
+    <div class="cv-section">
+      <div class="section-header">
+        <span class="section-label">Idiomas</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="lang-row">
+        <div class="lang-item">
+          <p class="lang-name">Español</p>
+          <p class="lang-level">Nativo</p>
+        </div>
+        <div class="lang-item">
+          <p class="lang-name">Inglés</p>
+          <p class="lang-level">B2 · Cambridge FCE (2013) · TOEFL (2014)</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <span class="footer-brand">JDG — Sistemas & Estructuras</span>
+    <ul class="footer-links">
+      <li><a href="mailto:ing.guzmanjuandavid@gmail.com">Email</a></li>
+      <li><a href="https://www.linkedin.com/in/ingjdg/" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="https://github.com/jdging" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <p class="footer-copy">Juan David Guzmán · Ingeniero Civil · Rosario, Argentina</p>
+  </footer>
+
+</body>
+</html>

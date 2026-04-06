@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Cálculo — JDG</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/portal.css">
+
+  <style>
+    /* ============================================================
+       CONTENIDO DEL HUB — scrolleable
+       ============================================================ */
+    .hub-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+    }
+
+    /* Grupo de módulos (Verificación / Cargas / Dimensionamiento) */
+    .module-group {
+      margin-bottom: 36px;
+    }
+
+    .group-label {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .group-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Grid de tarjetas — 3 por fila en pantallas anchas */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    /* ============================================================
+       TARJETA DE MÓDULO
+       ============================================================ */
+    .module-card {
+      background: var(--bg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 140px;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    /* Solo las tarjetas live son clickeables */
+    .module-card.live {
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .module-card.live:hover {
+      background: var(--surface);
+    }
+
+    .module-card.live:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .module-card.soon {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .card-num {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
+    .card-name {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.15;
+    }
+
+    .card-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+      letter-spacing: 0.02em;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .badge-live {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(201, 185, 154, 0.35);
+      padding: 2px 8px;
+    }
+
+    .badge-soon {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+    }
+
+    /* Flecha que aparece al hover en módulos live */
+    .card-arrow {
+      font-size: 14px;
+      color: var(--accent);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+</style>
+</head>
+<body>
+
+<div class="portal-layout">
+
+  <!-- ===========================================================
+       SIDEBAR
+       =========================================================== -->
+  <nav class="sidebar">
+
+    <a href="index.html" style="display:block">
+      <img src="../../marca/jdg/logo.svg" alt="JDG" class="sidebar-logo">
+    </a>
+
+    <div class="sidebar-nav">
+
+      <a href="esbelteces.html" class="sidebar-item" data-tip="01 · Esbelteces">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="4" y1="16" x2="16" y2="4"/>
+          <circle cx="4" cy="16" r="2" fill="currentColor" stroke="none"/>
+          <circle cx="16" cy="4" r="2" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <a href="#" class="sidebar-item disabled" data-tip="02 · Viento  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M2 8 C6 4 12 4 16 8"/>
+          <path d="M2 12 C5 9 11 9 15 12"/>
+          <path d="M2 16 C4 14 9 14 13 16"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="03 · Cubierta  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 15 L10 5 L18 15"/>
+          <line x1="5" y1="15" x2="15" y2="15"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="04 · Nieve  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="10" y1="2" x2="10" y2="18"/>
+          <line x1="2" y1="10" x2="18" y2="10"/>
+          <line x1="4.9" y1="4.9" x2="15.1" y2="15.1"/>
+          <line x1="15.1" y1="4.9" x2="4.9" y2="15.1"/>
+        </svg>
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <a href="#" class="sidebar-item disabled" data-tip="05 · Vigas  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="2" y="8" width="16" height="4"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="06 · Correas  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="2" y1="6" x2="18" y2="6"/>
+          <line x1="2" y1="10" x2="18" y2="10"/>
+          <line x1="2" y1="14" x2="18" y2="14"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="07 · Anclajes  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="10" cy="5" r="2.5"/>
+          <line x1="10" y1="7.5" x2="10" y2="16"/>
+          <line x1="6" y1="16" x2="14" y2="16"/>
+          <line x1="7" y1="12.5" x2="13" y2="12.5"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="08 · Columnas  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="7" y="3" width="6" height="14"/>
+          <line x1="4" y1="3" x2="16" y2="3"/>
+          <line x1="4" y1="17" x2="16" y2="17"/>
+        </svg>
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- ===========================================================
+       MAIN
+       =========================================================== -->
+  <div class="main">
+
+    <header class="module-header">
+      <span class="header-tag">JDG</span>
+      <div class="header-sep"></div>
+      <h1 class="header-title">Portal de Cálculo</h1>
+      <a class="header-back" href="../index.html">← Sitio</a>
+    </header>
+
+    <div class="hub-body">
+
+      <!-- GRUPO: Verificación -->
+      <div class="module-group">
+        <p class="group-label">Verificación</p>
+        <div class="module-grid">
+
+          <a href="esbelteces.html" class="module-card live">
+            <span class="card-num">01</span>
+            <span class="card-name">Analizador de Esbelteces</span>
+            <p class="card-desc">
+              Verificación de relaciones λ según CIRSOC 301-18.
+              Perfiles W, UPN, L, 2L-T y 2L-X. Compresión y tracción.
+            </p>
+            <div class="card-footer">
+              <span class="badge-live">Live</span>
+              <span class="card-arrow">→</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- GRUPO: Cargas -->
+      <div class="module-group">
+        <p class="group-label">Cargas</p>
+        <div class="module-grid">
+
+          <div class="module-card soon">
+            <span class="card-num">02</span>
+            <span class="card-name">Carga de Viento</span>
+            <p class="card-desc">
+              Presiones sobre superficie según CIRSOC 102.
+              Zonas, coeficientes de forma, altura.
+            </p>
+            <div class="card-footer">
+              <span class="badge-soon">Próximo</span>
+            </div>
+          </div>
+
+          <div class="module-card soon">
+            <span class="card-num">03</span>
+            <span class="card-name">Cargas de Cubierta</span>
+            <p class="card-desc">
+              Cargas permanentes y sobrecarga de uso en cubierta.
+              Peso propio de chapas, aislaciones y pendiente.
+            </p>
+            <div class="card-footer">
+              <span class="badge-soon">Próximo</span>
+            </div>
+          </div>
+
+          <div class="module-card soon">
+            <span class="card-num">04</span>
+            <span class="card-name">Cargas de Nieve</span>
+            <p class="card-desc">
+              Carga de nieve según CIRSOC 102.
+              Zonas sísmicas, factor de exposición y pendiente de cubierta.
+            </p>
+            <div class="card-footer">
+              <span class="badge-soon">Próximo</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- GRUPO: Dimensionamiento -->
+      <div class="module-group">
+        <p class="group-label">Dimensionamiento</p>
+        <div class="module-grid">
+
+          <div class="module-card soon">
+            <span class="card-num">05</span>
+            <span class="card-name">Vigas</span>
+            <p class="card-desc">
+              Dimensionamiento de vigas de acero.
+              Verificación de momento, corte y deflexión. Perfiles W.
+            </p>
+            <div class="card-footer">
+              <span class="badge-soon">Próximo</span>
+            </div>
+          </div>
+
+          <div class="module-card soon">
+            <span class="card-num">06</span>
+            <span class="card-name">Correas</span>
+            <p class="card-desc">
+              Dimensionamiento de correas de cubierta y lateral.
+              Perfiles C, Z y doble L. Separación y carga.
+            </p>
+            <div class="card-footer">
+              <span class="badge-soon">Próximo</span>
+            </div>
+          </div>
+
+          <div class="module-card soon">
+            <span class="card-num">07</span>
+            <span class="card-name">Anclajes</span>
+            <p class="card-desc">
+              Verificación de anclajes en hormigón.
+              Pernos de anclaje, placas base y grupo de pernos.
+            </p>
+            <div class="card-footer">
+              <span class="badge-soon">Próximo</span>
+            </div>
+          </div>
+
+          <div class="module-card soon">
+            <span class="card-num">08</span>
+            <span class="card-name">Columnas</span>
+            <p class="card-desc">
+              Dimensionamiento de columnas de acero.
+              Carga axial, pandeo y longitudes efectivas. Perfiles W y tubos.
+            </p>
+            <div class="card-footer">
+              <span class="badge-soon">Próximo</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /hub-body -->
+  </div><!-- /main -->
+
+</div><!-- /portal-layout -->
+
+</body>
+</html>

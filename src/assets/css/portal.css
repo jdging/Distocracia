@@ -1,0 +1,161 @@
+/* El portal usa el tono cálido como color de acento */
+:root { --accent: #c9b99a; }
+
+/* ── LAYOUT BASE (override del body de variables.css) ── */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.portal-layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--navy);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 20px;
+  opacity: 0.85;
+  display: block;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  flex: 1;
+}
+
+.sidebar-item {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(232, 228, 218, 0.4);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar-item:hover:not(.disabled) {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-item.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: rgba(201, 185, 154, 0.08);
+}
+
+.sidebar-item.disabled { cursor: not-allowed; }
+
+/* Tooltip al hover */
+.sidebar-item::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(var(--sidebar-w) + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+
+.sidebar-item:hover::after { opacity: 1; }
+
+.sidebar-icon { width: 20px; height: 20px; }
+
+.sidebar-divider {
+  width: 28px;
+  height: 1px;
+  background: rgba(46, 50, 85, 0.8);
+  margin: 6px auto;
+}
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── MODULE HEADER ── */
+.module-header {
+  height: var(--header-h);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.header-tag {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.header-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+
+.header-title {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+/* Elemento derecho del header: "← Sitio" (hub) o normativa (módulos) */
+.header-back,
+.header-norm {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+}
+
+.header-back { transition: color 0.2s; }
+.header-back:hover { color: var(--text); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); }

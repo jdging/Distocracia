@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juan David Guzmán — Ingeniero Civil | Estructuras & Sistemas</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #2b3263;
+    --navy-deep: #1e2348;
+    --accent: #4a4f6e;
+    --bg: #ffffff;
+    --bg-subtle: #f4f5f8;
+    --text-primary: #1a1d2e;
+    --text-secondary: #6b7194;
+    --text-muted: #9098b8;
+    --border: #e2e4ed;
+    --border-light: #eef0f5;
+
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Lato', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-size: 13.5px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--bg);
+    line-height: 1.65;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 56px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 26px;
+    border-bottom: 2px solid var(--navy);
+  }
+
+  .header-left { flex: 1; }
+
+  .header .logo {
+    height: 32px;
+    width: auto;
+    margin-bottom: 14px;
+    opacity: 0.9;
+  }
+
+  .header h1 {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .header .tagline {
+    font-family: var(--font-heading);
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.03em;
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+
+  .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    padding-top: 4px;
+  }
+
+  .contact a, .contact span {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+
+  .contact a:hover { color: var(--navy); }
+
+  /* ── RESUMEN ── */
+  .summary {
+    margin-top: 22px;
+    padding: 16px 20px;
+    background: var(--bg-subtle);
+    border-radius: 6px;
+    border-left: 3px solid var(--navy);
+  }
+
+  .summary p {
+    font-size: 12.5px;
+    color: var(--text-primary);
+    line-height: 1.7;
+  }
+
+  /* ── SECTION LABELS ── */
+  .section { margin-top: 24px; }
+
+  .section-label {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+
+  /* ── COMPETENCIAS ── */
+  .competence-block { margin-bottom: 9px; }
+  .competence-block:last-child { margin-bottom: 0; }
+
+  .competence-cat {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 2px;
+  }
+
+  .competence-text {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .skill-tag {
+    font-family: var(--font-heading);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 3px 9px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .skill-tag.highlight {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+
+  /* ── EXPERIENCE ── */
+  .entry { margin-bottom: 16px; }
+  .entry:last-child { margin-bottom: 0; }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .entry-title {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    letter-spacing: -0.01em;
+  }
+
+  .entry-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .entry-subtitle {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+    margin-top: 1px;
+  }
+
+  .entry ul {
+    margin-top: 4px;
+    padding-left: 16px;
+  }
+
+  .entry li {
+    font-size: 11.5px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 2px;
+  }
+
+  .entry li::marker {
+    color: var(--text-muted);
+    font-size: 8px;
+  }
+
+  /* ── PROJECT HIGHLIGHT ── */
+  .project-box {
+    padding: 14px 18px;
+    background: var(--bg-subtle);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .project-box .project-name {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy-deep);
+  }
+
+  .project-box .project-role {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .project-box .project-desc {
+    font-size: 11.5px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-top: 5px;
+  }
+
+  .project-box ul {
+    margin-top: 5px;
+    padding-left: 16px;
+  }
+
+  .project-box li {
+    font-size: 11.5px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    margin-bottom: 2px;
+  }
+
+  .project-box li::marker {
+    color: var(--text-muted);
+    font-size: 8px;
+  }
+
+  .project-box .project-stack {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+
+  .edu-item .edu-text {
+    font-size: 12px;
+    color: var(--text-primary);
+  }
+
+  .edu-item .edu-text strong {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--navy-deep);
+  }
+
+  .edu-item .edu-date {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* ── LANGUAGES ── */
+  .lang-row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .lang-item { font-size: 12px; color: var(--text-primary); }
+  .lang-item strong { font-family: var(--font-heading); font-weight: 700; color: var(--navy-deep); }
+  .lang-detail { font-size: 10.5px; color: var(--text-muted); }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-light);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    html { font-size: 11.5px; }
+    body { background: #fff; }
+    .page { max-width: none; padding: 0; margin: 0; }
+
+    @page {
+      size: A4;
+      margin: 14mm 16mm 12mm 16mm;
+    }
+
+    .contact a { color: var(--text-secondary) !important; }
+
+    .skill-tag.highlight {
+      background: var(--navy) !important;
+      color: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .skill-tag, .summary, .project-box {
+      background: var(--bg-subtle) !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .header { border-bottom-color: var(--navy) !important; }
+    .entry { break-inside: avoid; }
+    .section { break-inside: avoid; }
+    .project-box { break-inside: avoid; }
+  }
+
+  @media screen and (max-width: 640px) {
+    .page { padding: 28px 24px; }
+    .header { flex-direction: column; }
+    .contact { align-items: flex-start; }
+    .entry-header { flex-direction: column; gap: 2px; }
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header">
+    <div class="header-left">
+      <img src="logoclaro.svg" alt="JDG" class="logo">
+      <h1>Juan David Guzmán</h1>
+      <div class="tagline">Ingeniero Civil · Diseño Estructural &amp; Sistemas de Gestión · Proyectos Industriales</div>
+    </div>
+    <div class="contact">
+      <span>Rosario, Argentina</span>
+      <span>(341) 360-3215</span>
+      <a href="mailto:ing.guzmanjuandavid@gmail.com">ing.guzmanjuandavid@gmail.com</a>
+      <a href="https://linkedin.com/in/ingjdg">linkedin.com/in/ingjdg</a>
+      <a href="https://jdging.github.io/Portafolio/">jdging.github.io/Portafolio</a>
+    </div>
+  </header>
+
+  <!-- ═══ RESUMEN PROFESIONAL ═══ -->
+  <div class="summary">
+    <p>Ingeniero Civil con especialización en estructuras y más de 4 años de experiencia en proyectos industriales. Perfil híbrido: combina cálculo estructural de acero y hormigón con diseño e implementación de sistemas de gestión completos — desde la arquitectura de datos hasta los dashboards de operaciones. Construye soluciones propias con Google Apps Script, AppSheet, Looker Studio y Python sobre infraestructura 100% gratuita. Docente universitario activo en la UNR. Inglés B2 certificado.</p>
+  </div>
+
+  <!-- ═══ COMPETENCIAS TÉCNICAS ═══ -->
+  <section class="section">
+    <h2 class="section-label">Competencias técnicas</h2>
+
+    <div class="competence-block">
+      <div class="competence-cat">Cálculo y Diseño Estructural</div>
+      <div class="competence-text">Estructuras de acero y hormigón armado. Normativas CIRSOC, AISC, ACI. Proyectos en etapas conceptual, básica, detalle, fabricación y montaje.</div>
+    </div>
+
+    <div class="competence-block">
+      <div class="competence-cat">Gestión y Oficina Técnica</div>
+      <div class="competence-text">Auditoría y validación técnica de memorias de cálculo y propuestas de contratistas. Definición de alcances técnicos y elaboración de especificaciones para licitación.</div>
+    </div>
+
+    <div class="competence-block">
+      <div class="competence-cat">Desarrollo de Sistemas de Gestión</div>
+      <div class="competence-text">Diseño de arquitecturas multi-proyecto con Google Apps Script (Web Apps, webhooks, triggers, APIs). Bases de datos relacionales en Google Sheets. Aplicaciones móviles para operadores con AppSheet. Dashboards analíticos con Looker Studio. Portales web con HTML/CSS en GitHub Pages. Generación automatizada de PDFs y emails transaccionales.</div>
+    </div>
+
+    <div class="competence-block">
+      <div class="competence-cat">Supervisión de Obra</div>
+      <div class="competence-text">Control de cumplimiento de contratos, rehabilitación estructural, inspección en taller y campo.</div>
+    </div>
+
+    <div class="skills-grid">
+      <span class="skill-tag highlight">CIRSOC</span>
+      <span class="skill-tag highlight">AISC</span>
+      <span class="skill-tag highlight">ACI</span>
+      <span class="skill-tag">SAP2000</span>
+      <span class="skill-tag">IDEA StatiCa</span>
+      <span class="skill-tag">Tekla Structures</span>
+      <span class="skill-tag">AutoCAD 2D/3D</span>
+      <span class="skill-tag highlight">Google Apps Script</span>
+      <span class="skill-tag highlight">Python</span>
+      <span class="skill-tag">Excel VBA</span>
+      <span class="skill-tag">AppSheet</span>
+      <span class="skill-tag">Looker Studio</span>
+      <span class="skill-tag">HTML/CSS</span>
+      <span class="skill-tag">GitHub Pages</span>
+      <span class="skill-tag">Google Calendar API</span>
+      <span class="skill-tag">Google Drive API</span>
+      <span class="skill-tag">Modelado BIM</span>
+    </div>
+  </section>
+
+  <!-- ═══ EXPERIENCIA LABORAL ═══ -->
+  <section class="section">
+    <h2 class="section-label">Experiencia laboral</h2>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Ingeniero Estructural</span>
+        <span class="entry-meta">Ene 2024 — Presente</span>
+      </div>
+      <div class="entry-subtitle">Excel Consulting · Rosario, Argentina</div>
+      <ul>
+        <li>Diseño y cálculo de estructuras metálicas y de hormigón para proyectos industriales: plantas de bioenergía, terminales portuarias e instalaciones de almacenamiento.</li>
+        <li>Elaboración de especificaciones técnicas, memorias de cálculo y planos de ingeniería básica, detalle y montaje, aplicando normativas CIRSOC y estándares internacionales.</li>
+        <li>Auditoría y validación técnica de memorias de cálculo y propuestas de contratistas.</li>
+        <li>Desarrollo de software de ingeniería propio (Python y Excel VBA): aplicaciones web para cálculo estructural y herramientas internas que redujeron tareas de 8 horas a segundos.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Docente — Estática Aplicada</span>
+        <span class="entry-meta">Nov 2022 — Presente</span>
+      </div>
+      <div class="entry-subtitle">Universidad Nacional de Rosario (UNR) · Fac. de Ingeniería Civil</div>
+      <ul>
+        <li>Dictado de clases prácticas de Estática en la Facultad de Ingeniería Civil (UNR).</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Ingeniero Estructural</span>
+        <span class="entry-meta">Mar 2023 — Dic 2023</span>
+      </div>
+      <div class="entry-subtitle">AC Ingeniería · Rosario, Argentina</div>
+      <ul>
+        <li>Diseño y cálculo de estructuras de acero: torre de acceso de 34 m con manejo de 12 toneladas en proceso de ensamblaje en 3 etapas.</li>
+        <li>Cálculo, diseño y control de fabricación de elementos prefabricados de hormigón (400 m²), banderolas y pórticos viales.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Ingeniero Civil</span>
+        <span class="entry-meta">Ago 2021 — Feb 2023</span>
+      </div>
+      <div class="entry-subtitle">Deprop · Rosario, Argentina</div>
+      <ul>
+        <li>Supervisión y monitoreo de obras civiles: control de contratos, reparaciones de edificios y rehabilitación estructural.</li>
+        <li>Desarrollo y verificación de diseños estructurales para proyectos de construcción.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Pasante de Ingeniería</span>
+        <span class="entry-meta">Mar 2021 — Jun 2021</span>
+      </div>
+      <div class="entry-subtitle">Ingeniería y Pilotes · Rosario, Argentina</div>
+      <ul>
+        <li>Asistencia en procesos de licitación y supervisión de obras.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══ PROYECTO PROPIO DESTACADO ═══ -->
+  <section class="section">
+    <h2 class="section-label">Proyecto propio destacado</h2>
+
+    <div class="project-box">
+      <div class="project-header">
+        <span class="project-name">Wash Motion — Sistema de Gestión para Red de Lavaderos</span>
+        <span class="project-role">Diseño, desarrollo e implementación</span>
+      </div>
+      <div class="project-desc">
+        Plataforma operativa completa para una red de lavaderos móviles con modelo de franquicia. Arquitectura distribuida en 3 proyectos de Apps Script independientes, base de datos relacional de 12+ tablas en Google Sheets, y portales web diferenciados por rol.
+      </div>
+      <ul>
+        <li>Sistema de reservas en tiempo real con detección automática de conflictos de horario, oferta de slots alternativos y expiración tokenizada a 15 minutos.</li>
+        <li>Integración con Google Calendar (creación/cancelación automática de eventos) y Google Forms (cancelaciones y valoraciones post-servicio).</li>
+        <li>App móvil para operadores en AppSheet: check-in, registro de servicios, carga de comprobantes de pago.</li>
+        <li>Dashboards analíticos en Looker Studio: ocupación por franja horaria, rendimiento por operador, tasas de no-show, ingresos por sucursal y método de pago.</li>
+        <li>Módulo financiero: rendiciones automáticas con generación de PDFs en Google Drive, cálculo de comisiones por operador, emails diferenciados (admin diario + operador según frecuencia de pago).</li>
+        <li>Proxy de URLs sensibles en Apps Script para ocultar endpoints de AppSheet y Looker del HTML público. Portales en GitHub Pages (admin, operador, cliente).</li>
+        <li>Emails transaccionales HTML: confirmación con botón "Guardar en calendario", email VIP con ficha del operador (foto, rating, mapa), notificación de conflictos, y post-servicio con link de valoración.</li>
+      </ul>
+      <div class="project-stack">Google Apps Script (Web Apps + Webhooks + Triggers) · Google Sheets (12+ tablas) · Google Calendar API · Google Drive API · Google Forms · AppSheet · Looker Studio · HTML/CSS · GitHub Pages</div>
+    </div>
+  </section>
+
+  <!-- ═══ EDUCACIÓN ═══ -->
+  <section class="section">
+    <h2 class="section-label">Educación</h2>
+
+    <div class="edu-item">
+      <div class="edu-text"><strong>Especialización en Ingeniería Estructural</strong> — UNR, Rosario</div>
+      <span class="edu-date">2023 — 2024</span>
+    </div>
+    <div class="edu-item">
+      <div class="edu-text"><strong>Ingeniería Civil</strong> — UNR, Rosario</div>
+      <span class="edu-date">2015 — 2021</span>
+    </div>
+  </section>
+
+  <!-- ═══ IDIOMAS ═══ -->
+  <section class="section">
+    <h2 class="section-label">Idiomas</h2>
+    <div class="lang-row">
+      <div class="lang-item">
+        <strong>Español</strong> — Nativo
+      </div>
+      <div class="lang-item">
+        <strong>Inglés</strong> — B2 <span class="lang-detail">· Cambridge FCE (2013) · TOEFL (2014)</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">Actualizado · Marzo 2026</div>
+
+</div>
+</body>
+</html>

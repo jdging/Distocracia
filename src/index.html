@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JDG — Sistemas & Estructuras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/site.css">
+
+  <style>
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 4rem 4rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Watermark outline gigante */
+    .hero::after {
+      content: 'ESTRUCTURAS';
+      position: absolute;
+      right: -0.05em;
+      bottom: -0.15em;
+      font-family: var(--font-serif);
+      font-size: clamp(6rem, 16vw, 16rem);
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border);
+      line-height: 1;
+      pointer-events: none;
+      letter-spacing: -0.02em;
+      user-select: none;
+    }
+
+    .hero-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(3rem, 7vw, 6rem);
+      line-height: 1.0;
+      color: var(--text);
+      max-width: 700px;
+      margin-bottom: 0.2em;
+    }
+
+    /* El span que contiene el texto animado */
+    #decrypt-target {
+      display: block;
+    }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      line-height: 1.9;
+      max-width: 380px;
+    }
+
+    .hero-ctas {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    /* ── SERVICIOS ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .service-card {
+      background: var(--bg);
+      padding: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      transition: background 0.2s;
+      min-height: 220px;
+    }
+    .service-card:hover { background: var(--surface); }
+
+    .service-num {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+    }
+
+    .service-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--text);
+    }
+
+    .service-desc {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.8;
+      letter-spacing: 0.03em;
+      margin-top: auto;
+    }
+
+    /* ── PORTAL CTA ── */
+    .portal-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .portal-cta-text h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 0.8rem;
+    }
+
+    .portal-cta-text p {
+      font-size: 0.72rem;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.8;
+    }
+
+    .portal-modules {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-width: 220px;
+    }
+
+    .module-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .module-item .mod-num {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      color: var(--border);
+      width: 24px;
+    }
+    .module-item.live { color: var(--accent); }
+    .module-item.live .mod-num { color: var(--navy); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .portal-cta { flex-direction: column; }
+    }
+  </style>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HERO BG IMAGE — para desactivar, comentar todo este bloque
+       Ajustá --hero-overlay-opacity: 0 = imagen pura · 1 = sin imagen
+       ══════════════════════════════════════════════════════════ -->
+  <style id="hero-bg">
+    :root { --hero-overlay-opacity: 0.70; }
+
+    .hero {
+      background-image:
+        linear-gradient(
+          rgba(26, 29, 46, var(--hero-overlay-opacity)),
+          rgba(26, 29, 46, var(--hero-overlay-opacity))
+        ),
+        url('assets/css/bangkok.jpg');
+      background-size: auto, cover;
+      background-position: center, center;
+      background-repeat: no-repeat;
+    }
+  </style>
+  <!-- FIN HERO BG IMAGE ════════════════════════════════════════ -->
+
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <span class="nav-logo">
+      <!-- ACOTACIÓN PARA R.P.: Logo blanco sobre fondo oscuro. Cambiar src si se actualiza el asset. -->
+      <img src="../marca/jdg/logo.svg" alt="JDG">
+    </span>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="servicios.html">Servicios</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><a class="nav-portal" href="portal/index.html">Portal →</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="home">
+    <p class="hero-label">Ingeniería estructural · Rosario, AR</p>
+
+    <h1 class="hero-title">
+      <!-- La primera línea es fija; la segunda es animada por decrypt.js -->
+      JDG<br>
+      <span id="decrypt-target"></span>
+    </h1>
+
+    <p class="hero-sub">
+      Juan David Guzmán<br>
+      Diseño y cálculo · Supervisión · Software de ingeniería
+    </p>
+
+    <div class="hero-ctas">
+      <a class="btn-primary" href="portal/index.html">Ver portal →</a>
+      <a class="btn-ghost" href="contacto.html">Contacto</a>
+    </div>
+  </section>
+
+  <!-- ── SERVICIOS ── -->
+  <section id="servicios">
+    <div class="section-header">
+      <span class="section-label">Servicios</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-num">01</span>
+        <h3 class="service-title">Diseño y cálculo estructural</h3>
+        <p class="service-desc">Estructuras de acero y hormigón armado. Normativas CIRSOC, AISC, ACI. Proyectos industriales, edilicios e infraestructura.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-num">02</span>
+        <h3 class="service-title">Supervisión y oficina técnica</h3>
+        <p class="service-desc">Control de contratos, memorias de cálculo, planos de detalle y montaje. Auditoría técnica de propuestas.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-num">03</span>
+        <h3 class="service-title">Sistemas de gestión</h3>
+        <p class="service-desc">Plataformas web a medida con Google Workspace: Apps Script, AppSheet, Looker Studio. Automatización de procesos.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-num">04</span>
+        <h3 class="service-title">Software de ingeniería</h3>
+        <p class="service-desc">Herramientas de cálculo propias en el browser. Sin instalación, basadas en normativa CIRSOC. Acceso desde el portal.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PORTAL CTA ── -->
+  <section id="portal-cta">
+    <div class="section-header">
+      <span class="section-label">Portal de cálculo</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="portal-cta">
+      <div class="portal-cta-text">
+        <h2>Software de ingeniería<br><em style="font-style:italic; color: var(--accent);">en el browser.</em></h2>
+        <p>Herramientas de cálculo estructural basadas en normativa CIRSOC. Sin instalación, directamente en el navegador.</p>
+        <a class="btn-primary" href="portal/index.html" style="display:inline-block; margin-top: 1.8rem;">Acceder al portal →</a>
+      </div>
+
+      <div class="portal-modules">
+        <div class="module-item live">
+          <span class="mod-num">01</span>
+          Analizador de Esbelteces
+        </div>
+        <div class="module-item">
+          <span class="mod-num">02</span>
+          Carga de viento
+        </div>
+        <div class="module-item">
+          <span class="mod-num">03</span>
+          Cargas de cubierta
+        </div>
+        <div class="module-item">
+          <span class="mod-num">04</span>
+          Cargas de nieve
+        </div>
+        <div class="module-item">
+          <span class="mod-num">05</span>
+          Dimensionamiento de vigas
+        </div>
+        <div class="module-item">
+          <span class="mod-num">06</span>
+          Correas
+        </div>
+        <div class="module-item">
+          <span class="mod-num">07</span>
+          Anclajes
+        </div>
+        <div class="module-item">
+          <span class="mod-num">08</span>
+          Columnas
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <span class="footer-brand">JDG — Sistemas & Estructuras</span>
+    <ul class="footer-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="mailto:ing.guzmanjuandavid@gmail.com">Email</a></li>
+      <li><a href="https://www.linkedin.com/in/ingjdg/" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="https://github.com/jdging" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <p class="footer-copy">Juan David Guzmán · Ingeniero Civil · Rosario, Argentina</p>
+  </footer>
+
+  <!-- ── ANIMACIÓN DECRYPT ── -->
+  <!-- Qué hace: revela "SISTEMAS & ESTRUCTURAS" letra por letra con chars random -->
+  <!-- Cómo funciona: cada letra pasa por N frames de caracteres aleatorios antes de fijarse -->
+  <script>
+    (function() {
+      const TARGET = 'SISTEMAS & ESTRUCTURAS';
+      const CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+      const FRAME_INTERVAL = 30;  // ms entre frames
+      const SCRAMBLE_STEPS = 5;   // cuántas veces cambia cada letra antes de fijarse
+
+      const el = document.getElementById('decrypt-target');
+
+      // Construye el estado inicial: todo underscore
+      let revealed = Array(TARGET.length).fill(false);
+      let steps    = Array(TARGET.length).fill(0);
+
+      function randomChar() {
+        return CHARS[Math.floor(Math.random() * CHARS.length)];
+      }
+
+      function render() {
+        let output = '';
+        for (let i = 0; i < TARGET.length; i++) {
+          if (TARGET[i] === ' ') {
+            output += ' ';
+          } else if (revealed[i]) {
+            output += TARGET[i];
+          } else {
+            output += randomChar();
+          }
+        }
+        el.textContent = output;
+      }
+
+      // Revela de izquierda a derecha, con un delay entre letras
+      let currentLetter = 0;
+
+      function tick() {
+        render();
+
+        // Avanza la letra actual
+        if (currentLetter < TARGET.length) {
+          if (TARGET[currentLetter] === ' ') {
+            revealed[currentLetter] = true;
+            currentLetter++;
+          } else {
+            steps[currentLetter]++;
+            if (steps[currentLetter] >= SCRAMBLE_STEPS) {
+              revealed[currentLetter] = true;
+              currentLetter++;
+            }
+          }
+        }
+
+        if (currentLetter < TARGET.length) {
+          setTimeout(tick, FRAME_INTERVAL);
+        } else {
+          // Última render con todo fijo
+          el.textContent = TARGET;
+        }
+      }
+
+      // Arranca con un delay inicial
+      setTimeout(tick, 600);
+    })();
+  </script>
+
+</body>
+</html>

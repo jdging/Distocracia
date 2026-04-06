@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — JDG Sistemas & Estructuras</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/site.css">
+
+  <style>
+    /* ── LAYOUT ── */
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 7rem 2rem 5rem;
+    }
+
+    /* ── HERO ── */
+    .page-hero {
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-label {
+      font-size: 0.63rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .page-intro {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.9;
+      max-width: 480px;
+    }
+
+    /* ── GRID PRINCIPAL: info + formulario ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 5rem;
+      padding-top: 4rem;
+    }
+
+    /* ── COLUMNA IZQUIERDA: info de contacto ── */
+    .contact-info {}
+
+    .info-block {
+      margin-bottom: 2.5rem;
+    }
+
+    .info-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    .info-value {
+      font-size: 0.72rem;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .info-value a {
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .info-value a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .info-note {
+      font-size: 0.63rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 0.3rem;
+    }
+
+    /* ── COLUMNA DERECHA: formulario ── */
+    .contact-form {}
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Cuando form-group está dentro de form-row, el margen lo maneja el gap del grid */
+    .form-row .form-group {
+      margin-bottom: 0;
+    }
+
+    .form-group label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.65rem 0.8rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+      box-sizing: border-box;
+      /* Elimina el estilo nativo del select en algunos browsers */
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--border);
+    }
+
+    /* Select: agrega la flecha manualmente para mantener el estilo */
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: '↓';
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.7;
+    }
+
+    /* ── ESTADOS: éxito y error ── */
+    .form-feedback {
+      display: none;
+      padding: 1rem 1.2rem;
+      font-size: 0.68rem;
+      line-height: 1.7;
+      margin-top: 1rem;
+    }
+
+    .form-feedback.success {
+      border: 1px solid rgba(74, 124, 89, 0.4);
+      background: rgba(74, 124, 89, 0.08);
+      color: #a3d4b1;
+    }
+
+    .form-feedback.error {
+      border: 1px solid rgba(124, 74, 74, 0.4);
+      background: rgba(124, 74, 74, 0.08);
+      color: #d4a3a3;
+    }
+
+    .form-feedback.visible {
+      display: block;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .page-wrap { padding: 6rem 1.5rem 4rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <span class="nav-logo">
+      <!-- ACOTACIÓN PARA R.P.: Logo blanco sobre fondo oscuro. -->
+      <img src="../marca/jdg/logo.svg" alt="JDG">
+    </span>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="servicios.html">Servicios</a></li>
+      <li><a href="contacto.html" class="active">Contacto</a></li>
+      <li><a class="nav-portal" href="portal/index.html">Portal →</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- ── HERO ── -->
+    <div class="page-hero">
+      <p class="hero-label">JDG · Contacto</p>
+      <h1 class="page-title">Hablemos.</h1>
+      <p class="page-intro">
+        Consultas sobre proyectos, colaboraciones o cualquier pregunta técnica. Respondo en menos de 24 h.
+      </p>
+    </div>
+
+    <!-- ── GRID ── -->
+    <div class="contact-grid">
+
+      <!-- ── INFO ── -->
+      <div class="contact-info">
+
+        <div class="info-block">
+          <p class="info-label">Email</p>
+          <p class="info-value">
+            <a href="mailto:ing.guzmanjuandavid@gmail.com">ing.guzmanjuandavid@gmail.com</a>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <p class="info-label">LinkedIn</p>
+          <p class="info-value">
+            <a href="https://www.linkedin.com/in/ingjdg/" target="_blank" rel="noopener">linkedin.com/in/ingjdg</a>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <p class="info-label">GitHub</p>
+          <p class="info-value">
+            <a href="https://github.com/jdging" target="_blank" rel="noopener">github.com/jdging</a>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <p class="info-label">Ubicación</p>
+          <p class="info-value">Rosario, Argentina</p>
+          <p class="info-note">Disponible para proyectos remotos y presenciales en la región.</p>
+        </div>
+
+      </div>
+
+      <!-- ── FORMULARIO ── -->
+      <!--
+        Formspree: envía el POST a su servidor, que redirige el mensaje al email configurado.
+        Con fetch() + Accept: application/json, la respuesta queda en la página (sin redirect).
+        El endpoint https://formspree.io/f/xvzvqvak está vinculado al email del proyecto.
+      -->
+      <div class="contact-form">
+        <form id="contact-form" action="https://formspree.io/f/xvzvqvak" method="POST" novalidate>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Nombre</label>
+              <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Asunto</label>
+            <div class="select-wrap">
+              <select id="subject" name="subject" required>
+                <option value="" disabled selected>Seleccioná una opción</option>
+                <option value="Consulta técnica">Consulta técnica</option>
+                <option value="Proyecto estructural">Proyecto estructural</option>
+                <option value="Sistema de gestión">Sistema de gestión</option>
+                <option value="Software de ingeniería">Software de ingeniería</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea id="message" name="message" placeholder="Contame de qué se trata..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" id="submit-btn" style="display:inline-block;">
+            Enviar mensaje
+          </button>
+
+          <div class="form-feedback success" id="feedback-success">
+            Mensaje enviado. Te respondo en menos de 24 h.
+          </div>
+          <div class="form-feedback error" id="feedback-error">
+            Hubo un error al enviar. Intentá de nuevo o escribime directamente a <a href="mailto:ing.guzmanjuandavid@gmail.com">ing.guzmanjuandavid@gmail.com</a>.
+          </div>
+
+        </form>
+      </div>
+
+    </div><!-- /contact-grid -->
+
+  </div><!-- /page-wrap -->
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <span class="footer-brand">JDG — Sistemas & Estructuras</span>
+    <ul class="footer-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="mailto:ing.guzmanjuandavid@gmail.com">Email</a></li>
+      <li><a href="https://www.linkedin.com/in/ingjdg/" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="https://github.com/jdging" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <p class="footer-copy">Juan David Guzmán · Ingeniero Civil · Rosario, Argentina</p>
+  </footer>
+
+  <script>
+    // === SECCIÓN: envío del formulario vía Formspree ===
+    // Qué hace: intercepta el submit, lo manda a Formspree con fetch() y muestra el resultado inline.
+    // Por qué fetch() en vez de POST directo: evita el redirect a la página de Formspree.
+    //   Con Accept: application/json, Formspree devuelve JSON en vez de HTML → nos quedamos en la página.
+    // Nota: fetch() funciona en Live Server y en GitHub Pages (ambos son http/https).
+    //   En file:// Chrome bloqueará la request — pero este form no tiene sentido en file://.
+
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const feedbackSuccess = document.getElementById('feedback-success');
+    const feedbackError   = document.getElementById('feedback-error');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Estado cargando
+      submitBtn.textContent = 'Enviando...';
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          // Éxito: ocultar form, mostrar mensaje
+          form.reset();
+          submitBtn.style.display = 'none';
+          feedbackSuccess.classList.add('visible');
+        } else {
+          // Formspree respondió con error (ej: límite del plan alcanzado)
+          submitBtn.textContent = 'Enviar mensaje';
+          submitBtn.disabled = false;
+          feedbackError.classList.add('visible');
+        }
+      } catch (err) {
+        // Error de red (sin conexión, CORS en file://, etc.)
+        submitBtn.textContent = 'Enviar mensaje';
+        submitBtn.disabled = false;
+        feedbackError.classList.add('visible');
+      }
+    });
+  </script>
+
+</body>
+</html>

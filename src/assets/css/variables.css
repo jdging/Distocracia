@@ -1,0 +1,35 @@
+/* ── VARIABLES GLOBALES — JDG Sistemas & Estructuras ── */
+:root {
+  --bg:         #1a1d2e;
+  --surface:    #212540;
+  --border:     #2e3255;
+  --navy:       #2b3263;
+  --text:       #e8e4da;
+  --muted:      #7b8099;
+  --accent:     #9098b8;   /* sitio público — azul gris */
+  --warm:       #c9b99a;   /* portal y CV — tono cálido */
+
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-mono:  'JetBrains Mono', 'Consolas', monospace;
+
+  /* Portal */
+  --sidebar-w:  72px;
+  --header-h:   56px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ── BASE ── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }

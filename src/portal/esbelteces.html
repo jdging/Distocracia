@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analizador de Esbelteces — JDG Portal</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/portal.css">
+
+  <!-- KaTeX: renderizado de fórmulas LaTeX en el browser -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+  <!-- Datos de perfiles: cargado como script para compatibilidad con file:// -->
+  <script src="../assets/data/perfiles.js"></script>
+
+  <style>
+    /* Variables específicas de este módulo (colores de estado OK/NO) */
+    :root {
+      --ok-bg:    rgba(74, 124, 89, 0.12);
+      --ok-border:rgba(74, 124, 89, 0.4);
+      --ok-text:  #a3d4b1;
+      --no-bg:    rgba(124, 74, 74, 0.12);
+      --no-border:rgba(124, 74, 74, 0.4);
+      --no-text:  #d4a3a3;
+    }
+
+    /* Override: portal.css usa 0.1em; este módulo usa 0.08em */
+    .header-norm { letter-spacing: 0.08em; }
+
+    /* Área de cálculo: panel inputs | panel resultados */
+    .calc-area {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       PANEL DE INPUTS
+       ============================================================ */
+    .input-panel {
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group + .form-group {
+      margin-top: 10px;
+    }
+
+    label.field-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    select,
+    input[type="number"] {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 7px 10px;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      border-radius: 0;
+      transition: border-color 0.2s;
+    }
+
+    select:focus,
+    input[type="number"]:focus {
+      border-color: var(--accent);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237b8099'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+      cursor: pointer;
+    }
+
+    .profile-weight {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      padding: 6px 0 2px;
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 10px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-row span {
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .panel-sep {
+      height: 1px;
+      background: var(--border);
+    }
+
+    .calc-btn {
+      width: 100%;
+      padding: 11px;
+      background: var(--navy);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      margin-top: 4px;
+    }
+
+    .calc-btn:hover {
+      background: #374080;
+      border-color: var(--accent);
+    }
+
+    /* ============================================================
+       PANEL DE RESULTADOS
+       ============================================================ */
+    .result-panel {
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Estado vacío inicial */
+    .result-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 8px;
+      text-align: center;
+      opacity: 0.4;
+    }
+
+    .empty-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+    }
+
+    .empty-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Grilla de verificación Compresión / Tracción */
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border); /* el gap con color de borde crea efecto de línea */
+    }
+
+    .status-card {
+      background: var(--surface);
+      padding: 14px;
+    }
+
+    .status-card-title {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .status-card-limit {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .status-row:last-child {
+      border-bottom: none;
+    }
+
+    .status-name {
+      font-size: 13px;
+    }
+
+    .status-val {
+      font-size: 15px;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+
+    .badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 2px 7px;
+      font-weight: 500;
+    }
+
+    .badge-ok {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+      border: 1px solid var(--ok-border);
+    }
+
+    .badge-no {
+      background: var(--no-bg);
+      color: var(--no-text);
+      border: 1px solid var(--no-border);
+    }
+
+    /* Verificación constructiva (presillas) */
+    .constructive-card {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .constructive-card.c-ok {
+      border-color: var(--ok-border);
+      background: var(--ok-bg);
+    }
+
+    .constructive-card.c-no {
+      border-color: var(--no-border);
+      background: var(--no-bg);
+    }
+
+    .constructive-label {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .constructive-detail {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Memoria de cálculo — accordion */
+    .memoria-toggle {
+      width: 100%;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .memoria-toggle:hover,
+    .memoria-toggle.open {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .memoria-toggle.open {
+      border-bottom-color: transparent;
+    }
+
+    .memoria-body {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid var(--accent);
+      border-top: none;
+      padding: 16px;
+    }
+
+    .memoria-body.open {
+      display: flex;
+    }
+
+    .formula-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 6px;
+    }
+
+    .formula-label:first-child {
+      margin-top: 0;
+    }
+
+    .formula-katex {
+      overflow-x: auto;
+      padding: 2px 0;
+    }
+
+    /* Override de color para KaTeX — adaptado al fondo oscuro */
+    .formula-katex .katex {
+      color: var(--text);
+      font-size: 20px;
+    }
+
+    .formula-katex .katex-display {
+      margin: 0;
+    }
+
+    /* ============================================================
+       SCROLLBAR — minimalista
+       ============================================================ */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+
+    /* ============================================================
+       UTILITY
+       ============================================================ */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="portal-layout">
+
+  <!-- ===========================================================
+       SIDEBAR — íconos SVG + tooltip en hover
+       =========================================================== -->
+  <nav class="sidebar">
+
+    <a href="../../marca/jdg/logo.svg" style="display:block">
+      <img src="../../marca/jdg/logo.svg" alt="JDG" class="sidebar-logo">
+    </a>
+
+    <div class="sidebar-nav">
+
+      <!-- 01 · Esbelteces — módulo activo -->
+      <a href="esbelteces.html" class="sidebar-item active" data-tip="01 · Esbelteces">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="4" y1="16" x2="16" y2="4"/>
+          <circle cx="4" cy="16" r="2" fill="currentColor" stroke="none"/>
+          <circle cx="16" cy="4" r="2" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Cargas (futuros) -->
+      <a href="#" class="sidebar-item disabled" data-tip="02 · Viento  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M2 8 C6 4 12 4 16 8"/>
+          <path d="M2 12 C5 9 11 9 15 12"/>
+          <path d="M2 16 C4 14 9 14 13 16"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="03 · Cubierta  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 15 L10 5 L18 15"/>
+          <line x1="5" y1="15" x2="15" y2="15"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="04 · Nieve  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="10" y1="2" x2="10" y2="18"/>
+          <line x1="2" y1="10" x2="18" y2="10"/>
+          <line x1="4.9" y1="4.9" x2="15.1" y2="15.1"/>
+          <line x1="15.1" y1="4.9" x2="4.9" y2="15.1"/>
+        </svg>
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Dimensionamiento (futuros) -->
+      <a href="#" class="sidebar-item disabled" data-tip="05 · Vigas  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="2" y="8" width="16" height="4"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="06 · Correas  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="2" y1="6" x2="18" y2="6"/>
+          <line x1="2" y1="10" x2="18" y2="10"/>
+          <line x1="2" y1="14" x2="18" y2="14"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="07 · Anclajes  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="10" cy="5" r="2.5"/>
+          <line x1="10" y1="7.5" x2="10" y2="16"/>
+          <line x1="6" y1="16" x2="14" y2="16"/>
+          <line x1="7" y1="12.5" x2="13" y2="12.5"/>
+        </svg>
+      </a>
+
+      <a href="#" class="sidebar-item disabled" data-tip="08 · Columnas  (próximo)">
+        <svg class="sidebar-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="7" y="3" width="6" height="14"/>
+          <line x1="4" y1="3" x2="16" y2="3"/>
+          <line x1="4" y1="17" x2="16" y2="17"/>
+        </svg>
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- ===========================================================
+       MAIN
+       =========================================================== -->
+  <div class="main">
+
+    <!-- Header del módulo -->
+    <header class="module-header">
+      <span class="header-tag">Portal · 01</span>
+      <div class="header-sep"></div>
+      <h1 class="header-title">Analizador de Esbelteces</h1>
+      <span class="header-norm">CIRSOC 301-18 &nbsp;·&nbsp; k = 1</span>
+    </header>
+
+    <!-- Área de cálculo: inputs | resultados -->
+    <div class="calc-area">
+
+      <!-- ===================================================
+           PANEL DE INPUTS
+           =================================================== -->
+      <div class="input-panel">
+
+        <!-- Selección de perfil -->
+        <div>
+          <p class="section-label">01 · Perfil</p>
+          <div class="form-group">
+            <label class="field-label" for="profile-type">Tipo</label>
+            <select id="profile-type">
+              <option value="W">W</option>
+              <option value="UPN">UPN</option>
+              <option value="L">L</option>
+              <option value="2L-T">2L-T</option>
+              <option value="2L-X">2L-X</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="field-label" for="profile-name">Perfil</label>
+            <select id="profile-name">
+              <option>Cargando…</option>
+            </select>
+          </div>
+          <div class="profile-weight" id="profile-weight">— kg/m</div>
+        </div>
+
+        <div class="panel-sep"></div>
+
+        <!-- Inputs de geometría — se generan dinámicamente según tipo -->
+        <div id="geometry-inputs">
+          <p class="section-label">02 · Geometría</p>
+          <!-- JS inserta los campos aquí -->
+        </div>
+
+        <!-- Botón calcular -->
+        <button class="calc-btn" id="calc-btn">Calcular →</button>
+
+      </div>
+
+      <!-- ===================================================
+           PANEL DE RESULTADOS
+           =================================================== -->
+      <div class="result-panel">
+
+        <!-- Placeholder vacío inicial -->
+        <div class="result-empty" id="result-empty">
+          <div class="empty-title">Ingresá los datos</div>
+          <div class="empty-sub">Los resultados aparecerán acá</div>
+        </div>
+
+        <!-- Contenido de resultados (oculto hasta calcular) -->
+        <div id="result-content" class="hidden">
+
+          <p class="section-label">Verificación de Esbelteces</p>
+
+          <!-- Grilla Compresión / Tracción -->
+          <div class="status-grid" id="status-grid"></div>
+
+          <!-- Verificación constructiva para 2L-T / 2L-X -->
+          <div id="constructive-wrap" class="hidden"></div>
+
+          <!-- Memoria de cálculo (accordion) -->
+          <div>
+            <button class="memoria-toggle" id="memoria-toggle">
+              <span>Memoria de Cálculo</span>
+              <span id="memoria-arrow">↓</span>
+            </button>
+            <div class="memoria-body" id="memoria-body"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /calc-area -->
+  </div><!-- /main -->
+
+</div><!-- /portal-layout -->
+
+
+<script>
+// ============================================================
+// === SECCIÓN: DATOS ===
+// Qué hace: carga perfiles.json desde el mismo servidor
+// Por qué: los datos son estáticos, no necesita backend
+// Cómo funciona: fetch() retorna Promise; al resolver se populan
+//   los selectores y se renderizan los inputs de geometría
+// ============================================================
+
+let DB = null;
+
+function loadDB() {
+  // PERFILES_DB es la variable global definida en perfiles.js
+  // Se usa en vez de fetch() para compatibilidad con file:// y Live Server
+  if (typeof PERFILES_DB !== 'undefined') {
+    DB = PERFILES_DB;
+    populateProfiles();
+  } else {
+    document.getElementById('profile-name').innerHTML =
+      '<option>Error: no se cargó perfiles.js</option>';
+  }
+}
+
+// ============================================================
+// === SECCIÓN: POBLAR SELECTORES ===
+// ============================================================
+
+function populateProfiles() {
+  const type   = document.getElementById('profile-type').value;
+  const select = document.getElementById('profile-name');
+
+  select.innerHTML = '';
+
+  if (!DB || !DB[type]) return;
+
+  DB[type].forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.Perfil;
+    opt.textContent = p.Perfil;
+    select.appendChild(opt);
+  });
+
+  updateWeight();
+  renderGeometryInputs();
+}
+
+function updateWeight() {
+  const type = document.getElementById('profile-type').value;
+  const name = document.getElementById('profile-name').value;
+  const el   = document.getElementById('profile-weight');
+
+  if (!DB || !DB[type]) return;
+  const row = DB[type].find(p => p.Perfil === name);
+  el.textContent = row ? `Peso propio: ${row.g} kg/m` : '— kg/m';
+}
+
+// ============================================================
+// === SECCIÓN: INPUTS DINÁMICOS ===
+// Qué hace: renderiza campos distintos según el tipo de perfil
+// Por qué: W/UPN usan Lx + Ly; L un solo tramo; 2L-T/X también
+//   necesitan distancia de presillas (a) y espesor (esp)
+// Cómo funciona: innerHTML completo se reemplaza al cambiar tipo
+// ============================================================
+
+function renderGeometryInputs() {
+  const type      = document.getElementById('profile-type').value;
+  const container = document.getElementById('geometry-inputs');
+
+  let html = `<p class="section-label">02 · Geometría</p>`;
+
+  if (type === 'W' || type === 'UPN') {
+    html += `
+      <div class="form-group">
+        <label class="field-label" for="inp-Lx">Longitud Lx (cm)</label>
+        <input type="number" id="inp-Lx" value="200" min="0" step="10">
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="inp-Ly">Longitud Ly (cm)</label>
+        <input type="number" id="inp-Ly" value="200" min="0" step="10">
+      </div>`;
+
+  } else {
+    // L, 2L-T, 2L-X: longitud de tramo + rompetramo
+    html += `
+      <div class="form-group">
+        <label class="field-label" for="inp-L">Longitud de tramo L (cm)</label>
+        <input type="number" id="inp-L" value="200" min="0" step="10">
+      </div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="inp-rompe">
+        <span>Tiene Rompetramo</span>
+      </label>`;
+
+    if (type === '2L-T' || type === '2L-X') {
+      // Opciones de espesor únicas del tipo activo
+      const tOpts = getThicknessOptions(type)
+        .map(t => `<option value="${t}">${t} mm</option>`)
+        .join('');
+
+      html += `
+        <div class="form-group" style="margin-top:12px">
+          <label class="field-label" for="inp-a">Distancia entre presillas a (cm)</label>
+          <input type="number" id="inp-a" value="50" min="0" step="5">
+        </div>
+        <div class="form-group">
+          <label class="field-label" for="inp-esp">Espesor de presilla (mm)</label>
+          <select id="inp-esp">${tOpts}</select>
+        </div>`;
+    }
+  }
+
+  container.innerHTML = html;
+}
+
+function getThicknessOptions(type) {
+  if (!DB || !DB[type]) return [];
+  return [...new Set(DB[type].map(p => p.t))].sort((a, b) => a - b);
+}
+
+// ============================================================
+// === SECCIÓN: FUNCIONES DE CÁLCULO ===
+//
+// Port directo de AnalizadorDeEsbelteces.py (Python → JS).
+// Los nombres de variables se conservan idénticos para que
+// sea fácil comparar ambas versiones lado a lado.
+//
+// Cada función retorna un objeto { lam_comp, lam_trac, comp[],
+// trac[], formulas[], constructive } o null si hay error.
+// ============================================================
+
+// --- W / UPN ---
+// λx = Lx/rx  ·  λy = Ly/ry  →  máx para compresión
+function calcWUPN(row, Lx, Ly) {
+  const rx = row.Rx;
+  const ry = row.Ry;
+
+  if (Lx <= 0 || Ly <= 0 || rx <= 0 || ry <= 0) return null;
+
+  const lam_x = Lx / rx;
+  const lam_y = Ly / ry;
+
+  return {
+    lam_comp: Math.ceil(Math.max(lam_x, lam_y)),
+    lam_trac: Math.ceil(Math.max(lam_x, lam_y)),
+    comp: [{ name: 'λx', val: lam_x }, { name: 'λy', val: lam_y }],
+    trac: [{ name: 'λx', val: lam_x }, { name: 'λy', val: lam_y }],
+    formulas: [
+      { type: 'label', text: 'Cálculo de Ejes Principales' },
+      { type: 'katex', tex: `\\lambda_x = \\frac{L_x}{r_x} = \\frac{${n0(Lx)}}{${n2(rx)}} = ${n2(lam_x)} \\rightarrow \\mathbf{${Math.ceil(lam_x)}}` },
+      { type: 'katex', tex: `\\lambda_y = \\frac{L_y}{r_y} = \\frac{${n0(Ly)}}{${n2(ry)}} = ${n2(lam_y)} \\rightarrow \\mathbf{${Math.ceil(lam_y)}}` },
+    ],
+    constructive: null
+  };
+}
+
+// --- L ---
+// λv = L_eff / rv   (L_eff = 0.5·L si tiene rompetramo)
+function calcL(row, L_tramo, has_rompe) {
+  const rv = row.Rv;
+
+  if (L_tramo <= 0 || rv <= 0) return null;
+
+  const factor  = has_rompe ? 0.5 : 1.0;
+  const L_eff   = L_tramo * factor;
+  const lam_v   = L_eff / rv;
+
+  const condTxt = has_rompe ? 'Con Rompetramo' : 'Sin Rompetramo';
+  const factorTxt = has_rompe
+    ? `0.5 \\cdot ${n0(L_tramo)} = ${n0(L_eff)}`
+    : `L = ${n0(L_eff)}`;
+
+  return {
+    lam_comp: Math.ceil(lam_v),
+    lam_trac: Math.ceil(lam_v),
+    comp: [{ name: 'λv', val: lam_v }],
+    trac: [{ name: 'λv', val: lam_v }],
+    formulas: [
+      { type: 'label', text: condTxt },
+      { type: 'katex', tex: `L_{eff} = ${factorTxt} \\text{ cm}` },
+      { type: 'label', text: 'Eje de menor inercia (V)' },
+      { type: 'katex', tex: `\\lambda_v = \\frac{L_{eff}}{r_v} = \\frac{${n0(L_eff)}}{${n2(rv)}} = ${n2(lam_v)} \\rightarrow \\mathbf{${Math.ceil(lam_v)}}` },
+    ],
+    constructive: null
+  };
+}
+
+// --- 2L-T ---
+// Propiedades compuestas: Im = 2·Ix, rm = √(Im/2Ag)
+// Ilib = 2·(Ix + Ag·(ex + esp/2)²), rlib = √(Ilib/2Ag)
+// λm  = L_eff_m / rm
+// λlib = √( (L_eff_lib/rlib)² + (0.86·a/Rv)² )  ← combinación cuadrática CIRSOC
+// Determinante: λlib (c/rompe) o λm (s/rompe)
+function calcDobleT(row, L_tramo, a, esp_mm, has_rompe) {
+  const Ix    = row.Ix;
+  const Ag    = row.Ag;
+  const ex    = row.ex;
+  const Rv    = row.Rv;   // radio de giro mínimo individual (mayúscula en 2L-T)
+  const esp_cm = esp_mm / 10;
+
+  // Propiedades compuestas
+  const Im   = 2 * Ix;
+  const rm   = Ag > 0 ? Math.sqrt(Im / (2 * Ag)) : 0;
+  const Ilib = 2 * (Ix + Ag * Math.pow(ex + esp_cm / 2, 2));
+  const rlib = Ag > 0 ? Math.sqrt(Ilib / (2 * Ag)) : 0;
+
+  if (L_tramo <= 0 || rm <= 0 || rlib <= 0 || Rv <= 0) return null;
+
+  const L_eff_m   = has_rompe ? L_tramo * 0.5 : L_tramo;
+  const L_eff_lib = L_tramo; // siempre = L (el eje libre no se reduce)
+
+  const lam_m   = L_eff_m / rm;
+  const lam_lib = Math.sqrt(
+    Math.pow(L_eff_lib / rlib, 2) + Math.pow(0.86 * a / Rv, 2)
+  );
+
+  const lam_final = has_rompe ? lam_lib : lam_m;
+  const nameFinal = has_rompe ? 'λlib' : 'λm';
+  const condTxt   = has_rompe ? 'Con Rompetramo' : 'Sin Rompetramo';
+
+  // Verificación constructiva: a/rv ≤ 0.75·λ_final
+  const val_check   = a / Rv;
+  const check_limit = 0.75 * lam_final;
+  const is_ok       = val_check <= check_limit;
+
+  return {
+    lam_comp: Math.ceil(lam_final),
+    lam_trac: Math.ceil(lam_final),
+    comp: [{ name: nameFinal, val: lam_final }],
+    trac: [{ name: nameFinal, val: lam_final }],
+    formulas: [
+      { type: 'label', text: 'Propiedades Compuestas' },
+      { type: 'katex', tex: `r_m = ${n2(rm)} \\text{ cm}, \\quad r_{lib} = ${n2(rlib)} \\text{ cm}` },
+      { type: 'label', text: condTxt },
+      { type: 'label', text: 'Cálculo de Esbelteces' },
+      { type: 'katex', tex: `\\lambda_m = \\frac{L_{eff,m}}{r_m} = \\frac{${n0(L_eff_m)}}{${n2(rm)}} = ${n2(lam_m)} \\rightarrow \\mathbf{${Math.ceil(lam_m)}}` },
+      { type: 'katex', tex:
+          `\\lambda_{lib} = \\sqrt{\\left(\\frac{${n0(L_eff_lib)}}{${n2(rlib)}}\\right)^2 + \\left(\\frac{${n2(0.86*a)}}{${n2(Rv)}}\\right)^2} = ${n2(lam_lib)} \\rightarrow \\mathbf{${Math.ceil(lam_lib)}}` },
+      { type: 'label', text: 'Resultado Final' },
+      { type: 'katex', tex: `\\text{Determinante: } \\lambda = ${n2(lam_final)} \\rightarrow \\mathbf{${Math.ceil(lam_final)}}` },
+      { type: 'label', text: 'Verificación Constructiva — Presillas' },
+      { type: 'katex', tex: `\\frac{a}{r_v} = \\frac{${n1(a)}}{${n2(Rv)}} = ${n1(val_check)} \\leq 0.75 \\cdot ${Math.ceil(lam_final)} = ${n1(check_limit)}` },
+    ],
+    constructive: { val: val_check, limit: check_limit, ok: is_ok }
+  };
+}
+
+// --- 2L-X ---
+// Igual a 2L-T pero los ejes se intercambian:
+// Im = 2·Iz  →  rm = √(Im/2Ag)
+// I_ort = 2·(Ix + Ag·(ex + esp/2)²)  →  r_ort = √(I_ort/2Ag)
+// Ambas esbelteces son combinaciones cuadráticas
+// NOTA: en el JSON de 2L-X el campo rv está en minúsculas ('rv')
+function calcDobleX(row, L_tramo, a, esp_mm, has_rompe) {
+  const Ix_indiv = row.Ix;
+  const Rv       = row.rv;  // minúscula — ver JSON de 2L-X
+  const Iz       = row.Iz;
+  const Ag       = row.Ag;
+  const ex       = row.ex;
+  const esp_cm   = esp_mm / 10;
+
+  const dist_eje = ex + 0.5 * esp_cm;
+  const I_ort    = 2 * (Ix_indiv + Ag * Math.pow(dist_eje, 2));
+  const r_ort    = Ag > 0 ? Math.sqrt(I_ort / (2 * Ag)) : 0;
+
+  const Im = 2 * Iz;
+  const rm = Ag > 0 ? Math.sqrt(Im / (2 * Ag)) : 0;
+
+  if (L_tramo <= 0 || rm <= 0 || r_ort <= 0 || Rv <= 0) return null;
+
+  const L_eff_m   = has_rompe ? L_tramo * 0.5 : L_tramo;
+  const L_eff_ort = L_tramo;
+
+  const lam_m   = Math.sqrt(Math.pow(L_eff_m / rm, 2)     + Math.pow(0.86 * a / Rv, 2));
+  const lam_ort = Math.sqrt(Math.pow(L_eff_ort / r_ort, 2) + Math.pow(0.86 * a / Rv, 2));
+
+  const lam_final = has_rompe ? lam_ort : lam_m;
+  const nameFinal = has_rompe ? 'λort' : 'λm';
+  const condTxt   = has_rompe ? 'Con Rompetramo' : 'Sin Rompetramo';
+
+  const val_check   = a / Rv;
+  const check_limit = 0.75 * lam_final;
+  const is_ok       = val_check <= check_limit;
+
+  return {
+    lam_comp: Math.ceil(lam_final),
+    lam_trac: Math.ceil(lam_final),
+    comp: [{ name: nameFinal, val: lam_final }],
+    trac: [{ name: nameFinal, val: lam_final }],
+    formulas: [
+      { type: 'label', text: 'Propiedades Compuestas' },
+      { type: 'katex', tex: `r_m = ${n2(rm)} \\text{ cm}, \\quad r_{ort} = ${n2(r_ort)} \\text{ cm}` },
+      { type: 'label', text: condTxt },
+      { type: 'label', text: 'Cálculo de Esbelteces' },
+      { type: 'katex', tex:
+          `\\lambda_m = \\sqrt{\\left(\\frac{${n0(L_eff_m)}}{${n2(rm)}}\\right)^2 + \\left(\\frac{${n2(0.86*a)}}{${n2(Rv)}}\\right)^2} = ${n2(lam_m)} \\rightarrow \\mathbf{${Math.ceil(lam_m)}}` },
+      { type: 'katex', tex:
+          `\\lambda_{ort} = \\sqrt{\\left(\\frac{${n0(L_eff_ort)}}{${n2(r_ort)}}\\right)^2 + \\left(\\frac{${n2(0.86*a)}}{${n2(Rv)}}\\right)^2} = ${n2(lam_ort)} \\rightarrow \\mathbf{${Math.ceil(lam_ort)}}` },
+      { type: 'label', text: 'Resultado Final' },
+      { type: 'katex', tex: `\\text{Determinante: } \\lambda = ${n2(lam_final)} \\rightarrow \\mathbf{${Math.ceil(lam_final)}}` },
+      { type: 'label', text: 'Verificación Constructiva — Presillas' },
+      { type: 'katex', tex: `\\frac{a}{r_v} = \\frac{${n1(a)}}{${n2(Rv)}} = ${n1(val_check)} \\leq 0.75 \\cdot ${Math.ceil(lam_final)} = ${n1(check_limit)}` },
+    ],
+    constructive: { val: val_check, limit: check_limit, ok: is_ok }
+  };
+}
+
+// Helpers de formato numérico (equivalen a los f-strings de Python)
+const n0 = v => v.toFixed(0);
+const n1 = v => v.toFixed(1);
+const n2 = v => v.toFixed(2);
+
+// ============================================================
+// === SECCIÓN: ENRUTADOR — leer inputs y llamar función ===
+// ============================================================
+
+function calculate() {
+  const type = document.getElementById('profile-type').value;
+  const name = document.getElementById('profile-name').value;
+  if (!DB || !DB[type]) return;
+
+  const row = DB[type].find(p => p.Perfil === name);
+  if (!row) return;
+
+  let result = null;
+
+  if (type === 'W' || type === 'UPN') {
+    const Lx = +document.getElementById('inp-Lx').value || 0;
+    const Ly = +document.getElementById('inp-Ly').value || 0;
+    result = calcWUPN(row, Lx, Ly);
+
+  } else if (type === 'L') {
+    const L    = +document.getElementById('inp-L').value || 0;
+    const rompe = document.getElementById('inp-rompe').checked;
+    result = calcL(row, L, rompe);
+
+  } else if (type === '2L-T') {
+    const L    = +document.getElementById('inp-L').value || 0;
+    const a    = +document.getElementById('inp-a').value || 0;
+    const esp  = +document.getElementById('inp-esp').value || 0;
+    const rompe = document.getElementById('inp-rompe').checked;
+    result = calcDobleT(row, L, a, esp, rompe);
+
+  } else if (type === '2L-X') {
+    const L    = +document.getElementById('inp-L').value || 0;
+    const a    = +document.getElementById('inp-a').value || 0;
+    const esp  = +document.getElementById('inp-esp').value || 0;
+    const rompe = document.getElementById('inp-rompe').checked;
+    result = calcDobleX(row, L, a, esp, rompe);
+  }
+
+  if (result) renderResult(result);
+}
+
+// ============================================================
+// === SECCIÓN: RENDER DE RESULTADOS ===
+// Qué hace: muestra los resultados calculados + fórmulas KaTeX
+// Por qué: separar cálculo de presentación facilita debuggear
+// Cómo funciona: genera el HTML de las tarjetas, lo inserta,
+//   luego recorre el array de fórmulas y llama katex.render()
+//   para cada bloque (KaTeX no puede renderizar antes de existir el DOM)
+// ============================================================
+
+function renderResult(result) {
+  document.getElementById('result-empty').classList.add('hidden');
+  document.getElementById('result-content').classList.remove('hidden');
+
+  // --- Tarjetas Compresión / Tracción ---
+  const renderRows = (items, limit) => items.map(item => {
+    const val = Math.ceil(item.val);
+    const ok  = val <= limit;
+    return `
+      <div class="status-row">
+        <span class="status-name">${item.name}</span>
+        <span style="display:flex;align-items:center;gap:8px">
+          <span class="status-val">${val}</span>
+          <span class="badge ${ok ? 'badge-ok' : 'badge-no'}">${ok ? 'OK' : 'NO'}</span>
+        </span>
+      </div>`;
+  }).join('');
+
+  document.getElementById('status-grid').innerHTML = `
+    <div class="status-card">
+      <div class="status-card-title">Compresión</div>
+      <div class="status-card-limit">Límite reglamentario: 200</div>
+      ${renderRows(result.comp, 200)}
+    </div>
+    <div class="status-card">
+      <div class="status-card-title">Tracción</div>
+      <div class="status-card-limit">Límite reglamentario: 300</div>
+      ${renderRows(result.trac, 300)}
+    </div>`;
+
+  // --- Verificación constructiva (solo 2L) ---
+  const constrWrap = document.getElementById('constructive-wrap');
+  if (result.constructive) {
+    const c  = result.constructive;
+    const ok = c.ok;
+    constrWrap.classList.remove('hidden');
+    constrWrap.innerHTML = `
+      <div class="constructive-card ${ok ? 'c-ok' : 'c-no'}">
+        <div>
+          <div class="constructive-label" style="color:${ok ? 'var(--ok-text)' : 'var(--no-text)'}">
+            ${ok ? '✓' : '✗'} &nbsp;Presillas — ${ok ? 'Verifica' : 'Revisar separación a'}
+          </div>
+          <div class="constructive-detail">
+            a/r<sub>v</sub> = ${n1(c.val)} &nbsp;|&nbsp; Máx: ${n1(c.limit)}
+          </div>
+        </div>
+        <span class="badge ${ok ? 'badge-ok' : 'badge-no'}">${ok ? 'OK' : 'NO'}</span>
+      </div>`;
+  } else {
+    constrWrap.classList.add('hidden');
+  }
+
+  // --- Memoria de cálculo: KaTeX ---
+  // Importante: katex.render() necesita que el elemento ya esté en el DOM.
+  // Creamos cada elemento, lo agregamos al DOM, y luego renderizamos.
+  const body = document.getElementById('memoria-body');
+  body.innerHTML = '';
+
+  result.formulas.forEach(f => {
+    const el = document.createElement('div');
+    if (f.type === 'label') {
+      el.className = 'formula-label';
+      el.textContent = f.text;
+    } else {
+      el.className = 'formula-katex';
+      body.appendChild(el); // agregar al DOM antes de renderizar
+      try {
+        katex.render(f.tex, el, { displayMode: true, throwOnError: false });
+      } catch (err) {
+        el.textContent = f.tex; // fallback texto plano
+      }
+      return; // ya fue agregado
+    }
+    body.appendChild(el);
+  });
+}
+
+// ============================================================
+// === SECCIÓN: ACCORDION — Memoria de Cálculo ===
+// ============================================================
+
+document.getElementById('memoria-toggle').addEventListener('click', () => {
+  const body  = document.getElementById('memoria-body');
+  const btn   = document.getElementById('memoria-toggle');
+  const arrow = document.getElementById('memoria-arrow');
+  const open  = body.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  arrow.textContent = open ? '↑' : '↓';
+});
+
+// ============================================================
+// === SECCIÓN: EVENT LISTENERS ===
+// ============================================================
+
+document.getElementById('profile-type').addEventListener('change', () => {
+  populateProfiles();
+  // Limpiar resultados previos al cambiar tipo
+  document.getElementById('result-empty').classList.remove('hidden');
+  document.getElementById('result-content').classList.add('hidden');
+});
+
+document.getElementById('profile-name').addEventListener('change', updateWeight);
+
+document.getElementById('calc-btn').addEventListener('click', calculate);
+
+// Enter en cualquier input dispara el cálculo
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+
+// ============================================================
+// === INICIO ===
+// ============================================================
+loadDB();
+</script>
+
+</body>
+</html>
