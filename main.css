@@ -1,0 +1,3295 @@
+/* ============================================================
+   main.css — Estilos globales de la webapp AREA VIVA
+   Contiene: variables de marca, reset, layout, sidebar,
+             topbar, login screen, módulos.
+   ============================================================ */
+
+
+/* ============================================================
+   VARIABLES DE MARCA AREA VIVA
+   Fuente original: marca/cliente/colores.css
+   Acá se duplican para que funcionen con firebase serve,
+   ya que el servidor solo sirve archivos dentro de src/.
+   ACOTACIÓN PARA R.P.: estos son los colores base derivados de
+   AVSoft. Confirmar con el cliente antes de usar en documentos
+   que lleguen a terceros.
+   ============================================================ */
+
+:root {
+  /* Colores principales */
+  --av-primary:       #2c2c2c;   /* carbón oscuro */
+  --av-secondary:     #1a1a1a;   /* negro profundo — fondos oscuros */
+  --av-accent:        #c0392b;   /* rojo tierra — acento principal */
+  --av-accent-hover:  #a93226;   /* rojo tierra oscurecido — hover */
+
+  /* Colores de estado */
+  --av-ok:    #27ae60;
+  --av-warn:  #f39c12;
+  --av-info:  #2980b9;
+  --av-muted: #bdc3c7;
+
+  /* Neutros */
+  --av-white:      #ffffff;
+  --av-light-gray: #f5f5f5;
+  --av-mid-gray:   #888888;
+  --av-dark-gray:  #4a4a4a;
+  --av-border:     #dddddd;
+
+  /* Tipografía */
+  --av-font-heading: 'Montserrat', 'Segoe UI', sans-serif;
+  --av-font-body:    'Lato', 'Segoe UI', sans-serif;
+  --av-font-mono:    'Consolas', 'Courier New', monospace;
+
+  /* Tamaños tipográficos */
+  --av-font-size-base:  15px;
+  --av-font-size-small: 13px;
+  --av-font-size-xs:    11px;
+
+  /* Layout */
+  --sidebar-width: 220px;
+  --topbar-height: 56px;
+}
+
+
+/* ============================================================
+   RESET BASE
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ul { list-style: none; }
+
+/* Asegurar que [hidden] siempre oculte, sin importar el display
+   que tenga el elemento. Sin esto, un #app-shell { display: grid }
+   pisaría el hidden nativo del browser. */
+[hidden] { display: none !important; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-base);
+  color: var(--av-dark-gray);
+  background: var(--av-light-gray);
+  line-height: 1.65;
+}
+
+
+/* ============================================================
+   LOGIN SCREEN
+   Cubre el viewport completo. El card está centrado.
+   ============================================================ */
+
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--av-secondary);
+  /* Fondo sutil con gradiente para que no sea un negro plano */
+  background-image: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+}
+
+/* Card de login */
+.login-card {
+  background: var(--av-white);
+  width: 360px;
+  padding: 40px 36px;
+  border-radius: 4px;
+  border-bottom: 4px solid var(--av-accent);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Bloque logo + título */
+.login-logo-block {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* Cuadrado AV — versión compacta del isotipo */
+.login-logo {
+  width: 56px;
+  height: 56px;
+  background: var(--av-primary);
+  color: var(--av-white);
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  border-bottom: 3px solid var(--av-accent);
+}
+
+.login-title {
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  color: var(--av-primary);
+  margin-bottom: 4px;
+}
+
+.login-sub {
+  font-size: 12px;
+  color: var(--av-mid-gray);
+  font-family: var(--av-font-heading);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+/* Campos del formulario */
+.form-field {
+  margin-bottom: 18px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 11px;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+  margin-bottom: 6px;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--av-border);
+  border-radius: 3px;
+  font-family: var(--av-font-body);
+  font-size: 14px;
+  color: var(--av-primary);
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-field input:focus {
+  border-color: var(--av-accent);
+  background: var(--av-white);
+}
+
+/* Mensaje de error debajo del formulario */
+.login-error {
+  font-size: 13px;
+  color: var(--av-accent);
+  margin-bottom: 14px;
+  min-height: 18px; /* reserva espacio para que el layout no salte */
+  line-height: 1.4;
+}
+
+/* Botón principal (rojo, ancho completo) */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--av-accent);
+  color: var(--av-white);
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--av-accent-hover);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   APP SHELL — Layout de dos columnas (sidebar + main)
+   Solo visible cuando hay sesión activa.
+   ============================================================ */
+
+#app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+#sidebar {
+  background: var(--av-secondary);
+  color: var(--av-white);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Cabecera con nombre de marca */
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.sidebar-brand-name {
+  display: block;
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  color: var(--av-white);
+}
+
+.sidebar-brand-sub {
+  display: block;
+  font-size: 10px;
+  font-family: var(--av-font-heading);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--av-mid-gray);
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* Lista de navegación */
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+}
+
+/* Ítem de navegación */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--av-font-body);
+  color: #aaaaaa;
+  transition: background 0.15s, color 0.15s;
+  border-left: 3px solid transparent;
+  user-select: none;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--av-white);
+}
+
+/* Estado activo: borde izquierdo con color de acento */
+.nav-item.active {
+  background: rgba(192, 57, 43, 0.15);
+  color: var(--av-white);
+  border-left-color: var(--av-accent);
+}
+
+.nav-icon {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--av-mid-gray);
+}
+
+.nav-item.active .nav-icon,
+.nav-item:hover .nav-icon {
+  color: var(--av-accent);
+}
+
+.nav-label {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Pie del sidebar: email del usuario */
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.sidebar-footer-label {
+  display: block;
+  font-size: 10px;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #555555;
+  margin-bottom: 4px;
+}
+
+#sidebar-user-email {
+  display: block;
+  font-size: 12px;
+  color: var(--av-mid-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+
+#main-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--av-light-gray);
+}
+
+/* Topbar */
+#topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: var(--topbar-height);
+  background: var(--av-white);
+  border-bottom: 1px solid var(--av-border);
+  flex-shrink: 0;
+}
+
+#topbar-module-name {
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--av-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#topbar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+#topbar-user-name {
+  font-size: 13px;
+  color: var(--av-mid-gray);
+}
+
+/* Botón de logout — estilo fantasma, discreto */
+.btn-logout {
+  font-size: 12px;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--av-mid-gray);
+  background: none;
+  border: 1px solid var(--av-border);
+  border-radius: 3px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.btn-logout:hover {
+  color: var(--av-accent);
+  border-color: var(--av-accent);
+}
+
+/* Contenedor de módulos — el único que scrollea */
+#module-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px;
+}
+
+
+/* ============================================================
+   PLACEHOLDER DE MÓDULO
+   Se muestra en todos los módulos hasta Bloque 2+.
+   ============================================================ */
+
+.module-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  gap: 12px;
+}
+
+/* Badge con el nombre del módulo */
+.module-placeholder-badge {
+  display: inline-block;
+  background: var(--av-primary);
+  color: var(--av-white);
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 2px;
+  border-bottom: 3px solid var(--av-accent);
+}
+
+.module-placeholder-text {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--av-dark-gray);
+}
+
+.module-placeholder-sub {
+  font-size: 13px;
+  color: var(--av-mid-gray);
+  letter-spacing: 0.03em;
+}
+
+
+/* ============================================================
+   MÓDULOS — estilos compartidos por clientes, proveedores, etc.
+   ============================================================ */
+
+/* Sección con título dentro de un módulo */
+.mod-section {
+  margin-bottom: 40px;
+}
+
+.mod-section-title {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--av-border);
+}
+
+/* Formulario de dos columnas */
+.cliente-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+}
+
+@media (max-width: 600px) {
+  .cliente-form-row { grid-template-columns: 1fr; }
+}
+
+/* Feedback del formulario (éxito / error) */
+.form-feedback {
+  font-size: 13px;
+  min-height: 18px;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.form-feedback--ok    { color: var(--av-ok); }
+.form-feedback--error { color: var(--av-accent); }
+
+/* Variante del btn-primary para usar dentro de módulos (ancho auto) */
+.btn-primary--mod {
+  width: auto;
+  padding: 10px 24px;
+}
+
+/* Tabla de datos */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.data-table th {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--av-border);
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--av-border);
+  color: var(--av-dark-gray);
+  vertical-align: top;
+}
+
+.data-table tbody tr:hover {
+  background: var(--av-light-gray);
+}
+
+/* Estados de la lista */
+.list-loading,
+.list-empty,
+.list-error {
+  font-size: 13px;
+  color: var(--av-mid-gray);
+  padding: 20px 0;
+}
+
+.list-error { color: var(--av-accent); }
+
+
+/* ============================================================
+   MÓDULO ABOUT
+   ============================================================ */
+
+.about-wrap {
+  max-width: 640px;
+}
+
+/* Hero: logo + título + badge de entorno */
+.about-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.about-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.about-hero-logo {
+  width: 48px;
+  height: 48px;
+  background: var(--av-primary);
+  color: var(--av-white);
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid var(--av-accent);
+  flex-shrink: 0;
+}
+
+.about-hero-title {
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 17px;
+  letter-spacing: 0.14em;
+  color: var(--av-primary);
+  margin: 0 0 3px 0;
+}
+
+.about-hero-sub {
+  font-size: 12px;
+  color: var(--av-mid-gray);
+  margin: 0;
+}
+
+/* Badge de entorno (puntito + texto) */
+.about-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.about-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.about-status--dev {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.about-status--dev .about-status-dot { background: #43a047; }
+
+.about-status--prod {
+  background: #fce4ec;
+  color: #c62828;
+}
+.about-status--prod .about-status-dot { background: #e53935; }
+
+/* Aviso cuando falta el doc config/sistema en Firestore */
+.about-notice {
+  background: #fff8e1;
+  border-left: 3px solid var(--av-warn);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--av-dark-gray);
+  margin-bottom: 20px;
+  border-radius: 2px;
+  line-height: 1.6;
+}
+
+.about-notice code {
+  font-family: var(--av-font-mono);
+  background: rgba(0,0,0,0.06);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* Métricas: fila de tarjetas con valor grande + etiqueta */
+.about-metrics {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.about-metric {
+  flex: 1;
+  min-width: 120px;
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.about-metric--wide { flex: 2; min-width: 200px; }
+
+.about-metric-value {
+  font-family: var(--av-font-heading);
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--av-primary);
+  line-height: 1.1;
+}
+
+.about-metric-label {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+}
+
+/* Secciones secundarias (Stack, Autoría) */
+.about-section {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.about-section-title {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+  margin: 0 0 14px 0;
+}
+
+/* Chips del stack tecnológico */
+.about-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.about-chip {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  background: var(--av-light-gray);
+  color: var(--av-dark-gray);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--av-border);
+}
+
+/* Créditos */
+.about-credits {
+  font-size: 13px;
+  color: var(--av-dark-gray);
+  line-height: 1.7;
+}
+
+.about-credits p { margin: 0 0 4px 0; }
+
+.about-credits-sub {
+  font-size: 12px;
+  color: var(--av-mid-gray);
+}
+
+/* Skeleton de carga */
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skel {
+  background: linear-gradient(90deg, #eeeeee 25%, #e0e0e0 50%, #eeeeee 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s infinite;
+  border-radius: 4px;
+}
+
+.about-hero--loading {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skel--hero-left { height: 48px; width: 260px; }
+.skel--pill      { height: 28px; width: 90px; border-radius: 20px; }
+.skel--metric    { height: 78px; flex: 1; min-width: 120px; border-radius: 6px; }
+.skel--metric-wide { flex: 2; min-width: 200px; }
+
+
+/* ============================================================
+   MÓDULO CLIENTES — Cards
+   ============================================================ */
+
+/* Cabecera de sección con contador o badge */
+.mod-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.mod-section-count {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  background: var(--av-light-gray);
+  color: var(--av-mid-gray);
+  padding: 2px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--av-border);
+}
+
+.form-edit-badge {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--av-primary);
+  color: var(--av-white);
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+/* Acciones del formulario (botón submit + cancelar edición) */
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--av-border);
+  color: var(--av-mid-gray);
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--av-dark-gray);
+  color: var(--av-dark-gray);
+}
+
+/* Grilla responsive de cards de clientes */
+.clientes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* Card individual */
+.client-card {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.client-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Resaltado cuando se está editando esta card */
+.client-card--editing {
+  border-color: var(--av-primary);
+  box-shadow: 0 0 0 2px rgba(44,44,44,0.12);
+}
+
+/* Estado mientras se muestra la confirmación de eliminación */
+.client-card--confirming {
+  border-color: var(--av-accent);
+}
+
+/* Header de la card: nombre + botones */
+.client-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  gap: 8px;
+}
+
+.client-card-name {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--av-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.client-card-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Botones icon-only (editar / eliminar) */
+.btn-icon {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--av-border);
+  background: var(--av-white);
+  color: var(--av-mid-gray);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.btn-icon:hover {
+  background: var(--av-light-gray);
+  color: var(--av-dark-gray);
+  border-color: var(--av-dark-gray);
+}
+
+.btn-icon--danger:hover {
+  background: #fdecea;
+  color: var(--av-accent);
+  border-color: var(--av-accent);
+}
+
+/* Cuerpo de la card: detalles en lista */
+.client-card-body {
+  padding: 0 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.client-detail {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.client-detail-label {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+.client-detail-value {
+  color: var(--av-dark-gray);
+}
+
+.client-detail-empty {
+  color: var(--av-mid-gray);
+}
+
+/* Zona de confirmación de eliminación (dentro de la card, oculta por defecto) */
+.client-card-confirm {
+  padding: 12px 16px;
+  background: #fdecea;
+  border-top: 1px solid #f5c6c2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.client-card-confirm-text {
+  font-size: 12px;
+  color: var(--av-dark-gray);
+}
+
+.client-card-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Botones pequeños de la zona de confirmación */
+.btn-danger-sm {
+  background: var(--av-accent);
+  color: var(--av-white);
+  border: none;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-danger-sm:hover { opacity: 0.85; }
+
+.btn-ghost-sm {
+  background: none;
+  border: 1px solid var(--av-border);
+  color: var(--av-mid-gray);
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-ghost-sm:hover {
+  border-color: var(--av-dark-gray);
+  color: var(--av-dark-gray);
+}
+
+
+/* ============================================================
+   CLIENTES — BARRA SUPERIOR, BUSCADOR Y BOTÓN NUEVO
+   ============================================================ */
+
+/* Flex row con buscador a la izquierda y botón a la derecha */
+.clientes-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-bar-wrap {
+  flex: 1;
+}
+
+/* Input de búsqueda: mismo alto que btn-primary, borde sutil */
+.search-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--av-border);
+  border-radius: 6px;
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-base);
+  color: var(--av-primary);
+  background: var(--av-white);
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--av-primary);
+}
+
+.search-input::placeholder {
+  color: var(--av-mid-gray);
+  font-size: var(--av-font-size-small);
+}
+
+/* Botón verde para "nuevo ítem" — reutilizable en otros módulos */
+.btn-new-item {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 18px;
+  background: var(--av-ok);
+  color: var(--av-white);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: var(--av-font-size-small);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.btn-new-item:hover { opacity: 0.88; }
+
+
+/* ============================================================
+   CLIENTES — FORMULARIO COLAPSABLE
+   ============================================================ */
+
+/* Envoltorio del formulario — cuando está [hidden] desaparece por completo */
+.form-wrap {
+  border: 1.5px solid var(--av-border);
+  border-radius: 8px;
+  padding: 20px 24px 16px;
+  margin-bottom: 24px;
+  background: var(--av-white);
+}
+
+/* Select: misma apariencia que los inputs */
+.cliente-form select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1.5px solid var(--av-border);
+  border-radius: 6px;
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-base);
+  color: var(--av-primary);
+  background: var(--av-white);
+  appearance: none;
+  -webkit-appearance: none;
+  /* Flecha custom con SVG inline */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.cliente-form select:focus {
+  border-color: var(--av-primary);
+}
+
+/* Campo de ancho completo (fila 4 — dirección obra) */
+.form-field--full {
+  grid-column: 1 / -1;
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+
+/* ============================================================
+   FORMULARIO — CHECKBOX CON TOOLTIP DE AYUDA
+   ACOTACIÓN PARA R.P.: fila de checkbox alineada verticalmente
+   con un ícono "?" que muestra tooltip al hover
+   ============================================================ */
+
+/* Agrupa checkbox + label + ícono de ayuda en fila */
+.form-field--checkbox-group {
+  justify-content: flex-end;  /* alinea al fondo de la fila del form */
+  padding-top: 24px;          /* compensa la ausencia de label superior */
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--av-primary);
+  flex-shrink: 0;
+}
+
+.checkbox-label {
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-base);
+  color: var(--av-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Textarea — misma apariencia que inputs pero redimensionable */
+.textarea-input {
+  resize: vertical;
+  min-height: 72px;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   TOOLTIP DE AYUDA — ícono "?" con tooltip CSS-only
+   Qué hace: al hacer hover sobre .help-icon aparece el texto
+   del atributo data-tooltip como burbuja encima del ícono.
+   Por qué CSS-only: sin dependencias JS, accesible, cero overhead.
+   ============================================================ */
+
+.help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--av-light-gray);
+  color: var(--av-mid-gray);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--av-font-body);
+  cursor: help;
+  flex-shrink: 0;
+  position: relative;   /* ancla las pseudo-clases de posicionamiento */
+  /* La transición suaviza la aparición del tooltip */
+  transition: background 0.15s;
+}
+
+.help-icon:hover {
+  background: var(--av-border);
+  color: var(--av-dark-gray);
+}
+
+/* Burbuja del tooltip (::before = flecha, ::after = texto) */
+.help-icon[data-tooltip]::after {
+  content: attr(data-tooltip);  /* lee el texto del atributo */
+  position: absolute;
+  bottom: calc(100% + 8px);    /* aparece encima del ícono */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--av-primary);
+  color: var(--av-white);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: normal;
+  width: 220px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+  text-align: left;
+}
+
+/* Flechita triangular debajo de la burbuja */
+.help-icon[data-tooltip]::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--av-primary);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+
+.help-icon[data-tooltip]:hover::after,
+.help-icon[data-tooltip]:hover::before {
+  opacity: 1;
+}
+
+
+/* ============================================================
+   PROVEEDORES — EXTENSIONES DE LA CARD
+   ============================================================ */
+
+/* Título + rubro + badge PVP en columna */
+.prov-card-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Badge de texto pequeño (reutilizable) */
+.prov-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--av-font-heading);
+  letter-spacing: 0.03em;
+  width: fit-content;
+}
+
+/* Badge "PVP" — verde sutil */
+.prov-badge--pvp {
+  background: #e6f4ea;
+  color: #2e7d32;
+}
+
+/* Notas internas del proveedor (texto secundario en la card) */
+.prov-notas-text {
+  font-size: var(--av-font-size-small);
+  color: var(--av-mid-gray);
+  font-style: italic;
+  white-space: pre-line;
+  margin-top: 4px;
+}
+
+/* Footer de la card: fecha del último catálogo importado */
+.prov-catalog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--av-light-gray);
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.prov-catalog-label {
+  font-size: 11px;
+  color: var(--av-mid-gray);
+  font-family: var(--av-font-body);
+}
+
+.prov-catalog-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--av-dark-gray);
+  font-family: var(--av-font-heading);
+}
+
+
+/* ============================================================
+   CATALOGOS — BANNER, STATS Y TOOLBAR
+   ============================================================ */
+
+/* Banner rojo de advertencia — SIEMPRE visible cuando se accede al módulo */
+.catalogo-banner-danger {
+  background: #fdecea;
+  border: 1.5px solid #e53935;
+  border-radius: 6px;
+  color: #c62828;
+  font-size: var(--av-font-size-small);
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* Barra de estadísticas rápidas (total artículos + última actualización) */
+.catalogo-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--av-font-size-small);
+  color: var(--av-mid-gray);
+  margin-bottom: 16px;
+}
+
+.catalogo-stat-sep {
+  color: var(--av-border);
+  user-select: none;
+}
+
+/* Toolbar: filtros a la izquierda, selector de vista a la derecha */
+.catalogo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.catalogo-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Select de filtro por proveedor — mismo estilo que search-input */
+.cat-filter-select {
+  height: 40px;
+  padding: 0 32px 0 12px;
+  border: 1.5px solid var(--av-border);
+  border-radius: 6px;
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-small);
+  color: var(--av-primary);
+  background: var(--av-white);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+  flex-shrink: 0;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.cat-filter-select:focus {
+  border-color: var(--av-primary);
+}
+
+/* Selector de vista (Cards / Tabla / Galería) */
+.view-selector {
+  display: flex;
+  border: 1.5px solid var(--av-border);
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.view-btn {
+  height: 38px;
+  padding: 0 14px;
+  background: var(--av-white);
+  border: none;
+  border-left: 1px solid var(--av-border);
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-small);
+  color: var(--av-mid-gray);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.view-btn:first-child {
+  border-left: none;
+}
+
+.view-btn:hover {
+  background: var(--av-light-gray);
+  color: var(--av-primary);
+}
+
+/* Botón de vista activo — mismo color que el sidebar */
+.view-btn--active {
+  background: var(--av-primary);
+  color: var(--av-white);
+  font-weight: 600;
+}
+
+.view-btn--active:hover {
+  background: var(--av-dark-gray);
+  color: var(--av-white);
+}
+
+
+/* ============================================================
+   CATALOGOS — VISTA CARDS
+   ACOTACIÓN PARA R.P.: grilla de cards de artículos tipo tienda
+   ============================================================ */
+
+.art-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.art-card {
+  background: var(--av-white);
+  border: 1.5px solid var(--av-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.18s;
+}
+
+.art-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+/* Zona de foto: aspecto cuadrado */
+.art-card-foto {
+  aspect-ratio: 1 / 1;
+  background: var(--av-light-gray);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.art-card-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+}
+
+.art-foto-placeholder {
+  font-size: 12px;
+  color: var(--av-mid-gray);
+}
+
+/* Cuerpo de la card */
+.art-card-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.art-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.art-card-nombre {
+  font-family: var(--av-font-heading);
+  font-size: var(--av-font-size-base);
+  font-weight: 600;
+  color: var(--av-primary);
+  line-height: 1.3;
+  flex: 1;
+}
+
+/* Metadatos (SKU, proveedor, categoría) */
+.art-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.art-meta-label {
+  font-size: 11px;
+  color: var(--av-mid-gray);
+  background: var(--av-light-gray);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Badge de texto para artículos */
+.art-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.art-badge--pvp {
+  background: #e6f4ea;
+  color: #2e7d32;
+}
+
+/* Precio destacado al pie de la card */
+.art-precio {
+  font-family: var(--av-font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--av-primary);
+  margin-top: auto;
+}
+
+
+/* ============================================================
+   CATALOGOS — VISTA TABLA (compacta)
+   ACOTACIÓN PARA R.P.: estilo denso, similar a hoja de precios
+   ============================================================ */
+
+.art-table-wrap {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1.5px solid var(--av-border);
+}
+
+.art-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--av-font-size-small);
+}
+
+.art-table th {
+  background: var(--av-light-gray);
+  color: var(--av-dark-gray);
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 12px;
+  text-align: left;
+  padding: 10px 14px;
+  white-space: nowrap;
+  border-bottom: 1.5px solid var(--av-border);
+}
+
+.art-table td {
+  padding: 9px 14px;
+  color: var(--av-primary);
+  border-bottom: 1px solid var(--av-light-gray);
+  vertical-align: middle;
+}
+
+.art-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.art-table tbody tr:hover td {
+  background: #f8f8f8;
+}
+
+.art-table-sku {
+  color: var(--av-mid-gray);
+  font-family: monospace;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.art-table-precio {
+  font-weight: 600;
+  font-family: var(--av-font-heading);
+  white-space: nowrap;
+  text-align: right;
+}
+
+.art-table-pvp {
+  text-align: center;
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   CATALOGOS — VISTA GALERÍA (énfasis en fotos)
+   ACOTACIÓN PARA R.P.: cards grandes para revisión visual
+   ============================================================ */
+
+.art-galeria-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.art-galeria-card {
+  background: var(--av-white);
+  border: 1.5px solid var(--av-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.18s;
+}
+
+.art-galeria-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+/* Foto ocupa ~70% de la card */
+.art-galeria-foto {
+  aspect-ratio: 3 / 4;
+  background: var(--av-light-gray);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.art-galeria-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 16px;
+}
+
+.art-galeria-foto-placeholder {
+  font-size: 11px;
+  color: var(--av-mid-gray);
+  text-align: center;
+  padding: 8px;
+}
+
+.art-galeria-info {
+  padding: 8px 10px;
+}
+
+.art-galeria-nombre {
+  font-family: var(--av-font-heading);
+  font-size: var(--av-font-size-small);
+  font-weight: 600;
+  color: var(--av-primary);
+  margin: 0 0 3px;
+  line-height: 1.3;
+}
+
+.art-galeria-prov {
+  font-size: 11px;
+  color: var(--av-mid-gray);
+  margin: 0 0 4px;
+}
+
+.art-galeria-precio {
+  font-family: var(--av-font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--av-primary);
+  margin: 0;
+}
+
+
+/* ============================================================
+   Catálogo — Vista por proveedor (acordeón)
+   ACOTACIÓN PARA R.P.: cada grupo es un proveedor colapsable.
+   El chevron rota 90° con CSS transition al abrirse.
+   ============================================================ */
+
+.cat-prov-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cat-prov-group {
+  border: 1px solid var(--av-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Header clickeable — funciona como botón nativo */
+.cat-prov-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  background: var(--av-white);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--av-font-body);
+  transition: background 0.15s;
+}
+
+.cat-prov-header:hover {
+  background: var(--av-light-gray);
+}
+
+/* Cuando está abierto: fondo diferente y borde inferior separador */
+.cat-prov-header--open {
+  background: var(--av-light-gray);
+  border-bottom: 1px solid var(--av-border);
+}
+
+.cat-prov-nombre {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--av-primary);
+}
+
+.cat-prov-count {
+  font-size: var(--av-font-size-xs);
+  color: var(--av-mid-gray);
+  background: var(--av-light-gray);
+  padding: 2px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--av-border);
+  white-space: nowrap;
+}
+
+/* Chevron: triángulo ▶ que rota a ▼ cuando el grupo está abierto */
+.cat-prov-chevron {
+  font-size: 0.65rem;
+  color: var(--av-mid-gray);
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.cat-prov-header--open .cat-prov-chevron {
+  transform: rotate(90deg);
+}
+
+/* Cuerpo del acordeón: contiene la tabla reutilizando .art-table */
+.cat-prov-body {
+  background: var(--av-light-gray);
+  padding: 16px 20px 20px;
+}
+
+/* Ajuste: eliminar el doble borde entre body y tabla */
+.cat-prov-body .art-table-wrap {
+  margin-top: 0;
+}
+
+.cat-prov-body .art-table {
+  background: var(--av-white);
+}
+
+
+/* ============================================================
+   HAMBURGER — BOTÓN Y OVERLAY (mobile)
+   ============================================================ */
+
+/* El botón hamburger solo existe en mobile; en desktop está oculto */
+.btn-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn-hamburger span {
+  display: block;
+  height: 2px;
+  background: var(--av-white);
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+/* Animación de X cuando el nav está abierto */
+body.nav-open .btn-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+body.nav-open .btn-hamburger span:nth-child(2) { opacity: 0; }
+body.nav-open .btn-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+
+/* ============================================================
+   RESPONSIVE — MOBILE / TABLET (max-width: 767px)
+   ACOTACIÓN PARA R.P.: estos estilos adaptan el shell de la app
+   a pantallas chicas. El sidebar pasa a ser un drawer deslizante.
+   ============================================================ */
+
+@media (max-width: 767px) {
+
+  /* ——— App shell ——— */
+  /* En desktop es grid de 2 col (sidebar + contenido).
+     En mobile colapsa a columna única. */
+  #app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--topbar-height) 1fr;
+    grid-template-areas:
+      "topbar"
+      "content";
+  }
+
+  /* ——— Sidebar como drawer lateral ——— */
+  /* El sidebar sale del flujo normal y se convierte en un panel
+     fixed que aparece desde la izquierda cuando body.nav-open está activo. */
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 260px;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    /* Elimina grid-area para no interferir con el grid */
+    grid-area: unset;
+  }
+
+  body.nav-open #sidebar {
+    transform: translateX(0);
+  }
+
+  /* Overlay semitransparente detrás del drawer */
+  body.nav-open::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 199;
+  }
+
+  /* ——— Topbar ——— */
+  #topbar {
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  /* El botón hamburger aparece en mobile */
+  .btn-hamburger {
+    display: flex;
+  }
+
+  /* Nombre del usuario se oculta, queda solo el botón de logout */
+  #topbar-user-name {
+    display: none;
+  }
+
+  /* ——— Contenido del módulo ——— */
+  #module-container {
+    padding: 16px 14px;
+  }
+
+  /* ——— Módulos: grilla de cards ——— */
+  /* En mobile las cards de clientes/proveedores van en columna única */
+  .clientes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ——— Barra superior de clientes ——— */
+  /* Buscador y botón apilados verticalmente en pantallas muy chicas */
+  .clientes-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-new-item {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ——— Formulario de cliente ——— */
+  /* Filas del formulario en columna única */
+  .cliente-form-row {
+    flex-direction: column;
+  }
+
+  .form-field--full {
+    width: 100%;
+  }
+
+  /* ——— About module ——— */
+  .about-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .about-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* ——— Catálogo: toolbar y formulario de artículo ——— */
+  .catalogo-toolbar-right {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .art-form-row {
+    flex-direction: column;
+  }
+
+  .art-form-row--align-end {
+    align-items: stretch;
+  }
+
+  .art-form-field--wide {
+    flex: none;
+  }
+
+}
+
+/* ============================================================
+   Catálogo: toolbar derecha (selector de vista + nuevo artículo)
+   ============================================================ */
+.catalogo-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ============================================================
+   Catálogo: cards de artículos — botones de acción y confirmación
+   ============================================================ */
+
+/* Botones de acción (editar / eliminar) en el header de la card */
+.art-card-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Estado de la card mientras se muestra la confirmación */
+.art-card--confirming {
+  border-color: var(--av-accent);
+}
+
+/* Zona de confirmación inline de eliminación */
+.art-card-confirm {
+  padding: 10px 14px;
+  background: #fdecea;
+  border-top: 1px solid #f5c6c2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.art-card-confirm-text {
+  font-size: 12px;
+  color: var(--av-dark-gray);
+}
+
+.art-card-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ============================================================
+   Formulario de artículo (alta / edición)
+   ============================================================ */
+
+/* Panel contenedor del formulario */
+.art-form-panel {
+  background: var(--av-white);
+  border: 1.5px solid var(--av-border);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+/* Header del panel: título + botón de cerrar */
+.art-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--av-border);
+  background: var(--av-light-gray);
+}
+
+.art-form-title {
+  font-family: var(--av-font-heading);
+  font-size: var(--av-font-size-base);
+  font-weight: 700;
+  color: var(--av-primary);
+  margin: 0;
+}
+
+/* Aviso de peligro dentro del formulario */
+.art-form-danger-notice {
+  padding: 8px 20px;
+  background: #fff3cd;
+  border-bottom: 1px solid #ffc107;
+  font-size: 12px;
+  color: #856404;
+}
+
+/* El formulario en sí */
+#art-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Fila de campos side-by-side */
+.art-form-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+/* Variante: alinea los items al final (para checkbox + selects) */
+.art-form-row--align-end {
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Campo individual: label + input en columna */
+.art-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+/* Campo que ocupa el espacio disponible en una fila */
+.art-form-field--wide {
+  flex: 1;
+}
+
+/* Campo con checkbox: usa layout especial para que el texto quede al lado */
+.art-form-field--checkbox {
+  justify-content: flex-end;
+  padding-bottom: 2px;
+}
+
+/* Label estándar de campo */
+.art-form-label {
+  font-family: var(--av-font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--av-mid-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Label para checkbox: el texto va junto a la casilla */
+.art-form-label-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--av-dark-gray);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Asterisco de campo obligatorio */
+.art-form-required {
+  color: var(--av-accent);
+  font-size: 13px;
+}
+
+/* Input de texto */
+.art-form-input {
+  height: 38px;
+  padding: 0 10px;
+  border: 1.5px solid var(--av-border);
+  border-radius: 6px;
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-base);
+  color: var(--av-primary);
+  background: var(--av-white);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.art-form-input:focus {
+  border-color: var(--av-primary);
+}
+
+/* Textarea (descripción) */
+.art-form-textarea {
+  height: auto;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+/* Select del formulario — mismo estilo que cat-filter-select */
+.art-form-select {
+  height: 38px;
+  padding: 0 28px 0 10px;
+  border: 1.5px solid var(--av-border);
+  border-radius: 6px;
+  font-family: var(--av-font-body);
+  font-size: var(--av-font-size-base);
+  color: var(--av-primary);
+  background: var(--av-white);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.art-form-select:focus {
+  border-color: var(--av-primary);
+}
+
+/* Input numérico: ancho más corto */
+.art-form-input--num {
+  width: 160px;
+}
+
+/* Contenedor de la sección dinámica de precio */
+.art-form-price-section {
+  background: var(--av-light-gray);
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+
+/* Texto de ayuda bajo un campo */
+.art-form-hint {
+  font-size: 12px;
+  color: var(--av-mid-gray);
+  margin: 8px 0 0;
+  line-height: 1.4;
+}
+
+/* Variante informativa (fondo azul suave) */
+.art-form-hint--info {
+  background: #e8f0fe;
+  color: #1a56db;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 0;
+}
+
+/* Sección del builder de specs */
+.art-form-specs-section {
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.art-form-specs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--av-light-gray);
+  border-bottom: 1px solid var(--av-border);
+}
+
+.art-form-specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Fila individual de spec: clave + valor + botón quitar */
+.art-spec-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--av-border);
+}
+
+.art-spec-row:last-child {
+  border-bottom: none;
+}
+
+.art-spec-key {
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.art-spec-val {
+  flex: 1;
+}
+
+/* Zona de botones de acción del formulario */
+.art-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+  border-top: 1px solid var(--av-border);
+}
+
+/* ============================================================
+   MÓDULO PROYECTOS Y PRESUPUESTOS
+   ============================================================ */
+
+/* --- Layout Principal --- */
+.proy-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.proy-filters {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+.proy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+/* --- Cards de Proyectos (Vista Lista) --- */
+.proy-card {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+}
+
+.proy-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.proy-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.proy-card-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.proy-card-obra {
+  font-family: var(--av-font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--av-primary);
+  line-height: 1.2;
+}
+
+.proy-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.proy-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--av-mid-gray);
+}
+
+.btn-open-proy {
+  width: 100%;
+  padding: 8px;
+  background: var(--av-light-gray);
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--av-primary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-open-proy:hover {
+  background: #eaeaea;
+}
+
+/* Badges de Estado */
+.proy-estado-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--av-white);
+}
+
+.proy-badge--cotizado { background-color: var(--av-warn); }
+.proy-badge--vendido  { background-color: var(--av-ok); }
+.proy-badge--entregado { background-color: var(--av-dark-gray); }
+
+/* --- Vista Detalle --- */
+.proy-detalle-header {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.btn-volver {
+  background: none;
+  border: none;
+  color: var(--av-mid-gray);
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-volver:hover { color: var(--av-primary); }
+
+.proy-detalle-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.proy-detalle-nombre {
+  font-family: var(--av-font-heading);
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--av-primary);
+  margin: 0;
+}
+
+.proy-estado-select {
+  padding: 4px 8px;
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--av-primary);
+}
+
+.proy-detalle-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--av-mid-gray);
+  flex-wrap: wrap;
+}
+
+/* --- Ambientes --- */
+.proy-ambiente {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.proy-ambiente-header {
+  background: var(--av-light-gray);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--av-border);
+}
+
+.proy-ambiente-nombre {
+  font-family: var(--av-font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--av-primary);
+}
+
+.proy-ambiente-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.proy-ambiente-subtotal {
+  font-family: var(--av-font-mono);
+  font-weight: 700;
+  color: var(--av-primary);
+}
+
+/* Tabla de Items */
+.proy-items-wrap {
+  overflow-x: auto; /* Permite scroll en mobile */
+}
+
+.proy-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Asegura que la tabla no se aplaste en mobile */
+}
+
+.proy-items-table th {
+  text-align: left;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-family: var(--av-font-heading);
+  color: var(--av-mid-gray);
+  border-bottom: 1px solid var(--av-border);
+}
+
+.proy-items-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--av-border);
+  vertical-align: middle;
+}
+
+.proy-col-nombre { width: 40%; }
+.proy-item-sku {
+  display: block;
+  font-size: 11px;
+  color: var(--av-mid-gray);
+  font-family: var(--av-font-mono);
+}
+
+.proy-item-input {
+  width: 70px;
+  padding: 6px;
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  text-align: right;
+  font-family: var(--av-font-mono);
+}
+
+.proy-ambiente-footer {
+  padding: 12px 16px;
+  background: var(--av-white);
+}
+
+/* --- Buscador Inline --- */
+.proy-buscador-wrap {
+  background: #f9f9f9;
+  border-top: 1px solid var(--av-border);
+  padding: 16px;
+}
+
+.proy-buscador-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.proy-buscador-resultados {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  background: var(--av-white);
+}
+
+.buscador-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--av-border);
+  cursor: pointer;
+}
+
+.buscador-item:hover { background: var(--av-light-gray); }
+
+.buscador-item-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.buscador-item-nombre { font-weight: 600; font-size: 13px; color: var(--av-primary); }
+.buscador-item-meta { font-size: 11px; color: var(--av-mid-gray); }
+.buscador-item-precio { font-family: var(--av-font-mono); font-weight: 700; font-size: 13px; color: var(--av-ok); }
+
+/* --- Total Footer --- */
+.proy-total-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--av-white);
+  border: 2px solid var(--av-primary);
+  border-radius: 6px;
+  margin-bottom: 24px;
+}
+
+.proy-total-label {
+  font-family: var(--av-font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+}
+
+.proy-total-valor {
+  font-family: var(--av-font-mono);
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--av-primary);
+}
+
+.proy-detalle-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--av-border);
+  padding-top: 24px;
+  margin-top: 24px;
+}
+
+/* Agrupa los botones del lado derecho del footer de detalle */
+.proy-footer-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ============================================================
+   MÓDULO: CONFIGURACIÓN
+   ============================================================ */
+
+.config-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 24px;
+  max-width: 860px;
+}
+
+/* --- Sección (empresa / condiciones) --- */
+.config-section {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 8px;
+  padding: 28px;
+}
+
+.config-section-header {
+  margin-bottom: 24px;
+}
+
+.config-section-title {
+  font-family: var(--av-font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--av-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.config-section-sub {
+  font-size: 13px;
+  color: var(--av-mid-gray);
+}
+
+/* --- Formulario de empresa --- */
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.config-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.config-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.config-form-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--av-mid-gray);
+}
+
+.config-form-input,
+.config-form-textarea {
+  padding: 10px 14px;
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  font-family: var(--av-font-body);
+  font-size: 14px;
+  color: var(--av-primary);
+  background: var(--av-white);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.config-form-input:focus,
+.config-form-textarea:focus {
+  border-color: var(--av-primary);
+}
+
+.config-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.config-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
+
+/* --- Feedback inline --- */
+.config-feedback {
+  font-size: 13px;
+}
+
+.config-feedback--ok    { color: var(--av-ok); }
+.config-feedback--error { color: var(--av-accent); }
+
+/* --- Lista de condiciones --- */
+.cond-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.config-empty-msg {
+  font-size: 13px;
+  color: var(--av-mid-gray);
+  font-style: italic;
+}
+
+.cond-item {
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--av-white);
+}
+
+.cond-view {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 16px;
+}
+
+.cond-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cond-titulo {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--av-primary);
+}
+
+.cond-texto {
+  font-size: 13px;
+  color: var(--av-mid-gray);
+  white-space: pre-line;
+}
+
+.cond-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Confirmación inline de eliminación */
+.cond-confirm-del {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #fff5f5;
+  border-top: 1px solid #fdd;
+  font-size: 13px;
+  color: var(--av-accent);
+}
+
+/* Formulario de edición inline */
+.cond-edit-form {
+  padding: 16px;
+  background: var(--av-light-gray);
+  border-top: 1px solid var(--av-border);
+}
+
+.cond-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Panel de nueva condición */
+.cond-add-panel {
+  border: 1px dashed var(--av-border);
+  border-radius: 6px;
+  padding: 20px;
+  margin-top: 16px;
+  background: var(--av-light-gray);
+}
+
+.cond-add-title {
+  font-family: var(--av-font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--av-mid-gray);
+  margin-bottom: 14px;
+}
+
+@media (max-width: 600px) {
+  .config-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Vista Home: pantalla de elección --- */
+.config-home {
+  padding: 40px 24px;
+  max-width: 700px;
+}
+
+.config-home-title {
+  font-family: var(--av-font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--av-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.config-home-sub {
+  font-size: 14px;
+  color: var(--av-mid-gray);
+  margin-bottom: 32px;
+}
+
+.config-home-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.config-home-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 28px 24px;
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.config-home-card:hover {
+  border-color: var(--av-primary);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.config-home-card-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.config-home-card-label {
+  font-family: var(--av-font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--av-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.config-home-card-desc {
+  font-size: 13px;
+  color: var(--av-mid-gray);
+}
+
+@media (max-width: 600px) {
+  .config-home-cards { grid-template-columns: 1fr; }
+}
+
+/* --- Vista genérica (temas / detalles) --- */
+.config-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  max-width: 900px;
+}
+
+.config-view-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.config-view-title {
+  font-family: var(--av-font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--av-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.config-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  background: var(--av-white);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--av-mid-gray);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.config-back-btn:hover {
+  border-color: var(--av-primary);
+  color: var(--av-primary);
+}
+
+/* --- Vista A: Temas del Sistema --- */
+.config-temas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.config-tema-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 16px;
+  border: 1px solid var(--av-border);
+  border-radius: 8px;
+  background: var(--av-white);
+  text-align: center;
+}
+
+.config-tema-card--active {
+  border-color: var(--av-primary);
+  box-shadow: 0 0 0 2px var(--av-primary);
+}
+
+/* Placeholders deshabilitados: apagados y no clickeables */
+.config-tema-card--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Preview con los colores reales del tema */
+.config-tema-preview {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  height: 36px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.config-tema-swatch {
+  flex: 1;
+  height: 100%;
+}
+
+.config-tema-swatch--primary { background: var(--av-primary); }
+.config-tema-swatch--accent  { background: var(--av-accent); }
+.config-tema-swatch--light   { background: var(--av-light-gray); border: 1px solid var(--av-border); }
+
+/* Preview vacío para placeholders */
+.config-tema-preview--empty {
+  background: repeating-linear-gradient(
+    -45deg,
+    #f0f0f0,
+    #f0f0f0 4px,
+    #e0e0e0 4px,
+    #e0e0e0 8px
+  );
+  border-radius: 4px;
+}
+
+.config-tema-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--av-primary);
+}
+
+.config-tema-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--av-white);
+  background: var(--av-primary);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.config-tema-soon {
+  font-size: 11px;
+  color: var(--av-mid-gray);
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .config-temas-grid { grid-template-columns: 1fr; }
+}
+
+/* --- Texto enriquecido (contenteditable) --- */
+/* Mismo estilo visual que .config-form-textarea */
+.config-form-richtext {
+  padding: 10px 14px;
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  font-family: var(--av-font-body);
+  font-size: 14px;
+  color: var(--av-primary);
+  background: var(--av-white);
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+
+.config-form-richtext:focus {
+  border-color: var(--av-primary);
+}
+
+/* Placeholder simulado vía CSS en contenteditable vacío */
+.config-form-richtext:empty::before {
+  content: attr(data-placeholder);
+  color: #aaa;
+  pointer-events: none;
+}
+
+/* --- Mini-barra de formato para condiciones --- */
+.cond-format-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: var(--av-light-gray);
+  border: 1px solid var(--av-border);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+
+.fmt-select {
+  padding: 3px 6px;
+  border: 1px solid var(--av-border);
+  border-radius: 3px;
+  font-size: 12px;
+  font-family: var(--av-font-body);
+  color: var(--av-primary);
+  background: var(--av-white);
+  cursor: pointer;
+  height: 26px;
+}
+
+.fmt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--av-border);
+  border-radius: 3px;
+  background: var(--av-white);
+  font-size: 13px;
+  color: var(--av-primary);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.fmt-btn:hover {
+  background: var(--av-primary);
+  border-color: var(--av-primary);
+  color: var(--av-white);
+}
+
+/* Cuando la barra precede al richtext, redondear el richtext por abajo */
+.cond-format-toolbar + .config-form-richtext {
+  border-radius: 0 0 4px 4px;
+}
+
+/* ============================================================
+   PDF TEMPLATE — Tabulado clásico AREA VIVA
+   ACOTACIÓN PARA R.P.: Estos estilos se aplican al HTML que
+   html2pdf.js captura para generar el PDF. Sistema de fuentes
+   Arial/sans-serif porque html2canvas no carga Google Fonts
+   de forma confiable. Confirmar tipografía con R.P. cuando
+   se implemente el logo definitivo.
+   ============================================================ */
+
+.pdf-presupuesto {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  color: #2c2c2c;
+  background: #fff;
+  padding: 20px;
+  width: 794px;  /* A4 a 96dpi */
+  box-sizing: border-box;
+}
+
+/* --- Header --- */
+.pdf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.pdf-logo-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ACOTACIÓN PARA R.P.: El bloque "AV" es un placeholder.
+   Cuando haya logo definitivo, reemplazar este div con <img>. */
+.pdf-logo-siglas {
+  width: 52px;
+  height: 52px;
+  background: #2c2c2c;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -1px;
+}
+
+.pdf-empresa-nombre {
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #2c2c2c;
+}
+
+.pdf-empresa-rubro {
+  font-size: 10px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.pdf-empresa-datos {
+  font-size: 10px;
+  color: #555;
+  text-align: right;
+  line-height: 1.6;
+}
+
+.pdf-divider {
+  border: none;
+  border-top: 2px solid #2c2c2c;
+  margin: 16px 0;
+}
+
+/* --- Sección datos del cliente --- */
+.pdf-section-title {
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #2c2c2c;
+  margin-bottom: 10px;
+}
+
+.pdf-tabla-cliente {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 11px;
+}
+
+.pdf-tabla-cliente th {
+  text-align: left;
+  padding: 6px 10px;
+  background: #f5f5f5;
+  font-weight: 700;
+  color: #555;
+  width: 18%;
+  border: 1px solid #e0e0e0;
+}
+
+.pdf-tabla-cliente td {
+  padding: 6px 10px;
+  border: 1px solid #e0e0e0;
+  color: #2c2c2c;
+}
+
+/* --- Tabla de artículos --- */
+.pdf-tabla-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 10px;
+}
+
+.pdf-thead-row {
+  background: #2c2c2c;
+  color: #fff;
+}
+
+.pdf-thead-row th {
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 9px;
+}
+
+/* Ancho de columnas de la tabla de items */
+.pdf-th-item   { width: 38%; }
+.pdf-th-sku    { width: 14%; }
+.pdf-th-cant   { width: 8%;  text-align: center; }
+.pdf-th-precio { width: 20%; text-align: right; }
+.pdf-th-total  { width: 20%; text-align: right; }
+
+.pdf-td-item   { padding: 6px 10px; border-bottom: 1px solid #eee; }
+.pdf-td-sku    { padding: 6px 10px; border-bottom: 1px solid #eee; color: #888; font-size: 9px; }
+.pdf-td-cant   { padding: 6px 10px; border-bottom: 1px solid #eee; text-align: center; }
+.pdf-td-precio { padding: 6px 10px; border-bottom: 1px solid #eee; text-align: right; font-family: monospace; }
+.pdf-td-total  { padding: 6px 10px; border-bottom: 1px solid #eee; text-align: right; font-family: monospace; font-weight: 700; }
+
+/* Fila de nombre de ambiente */
+.pdf-tr-ambiente td { background: #f0f0f0; padding: 5px 10px; font-weight: 700; font-size: 10px;
+                      text-transform: uppercase; letter-spacing: 0.04em; color: #555; }
+.pdf-td-ambiente-nombre { border-left: 3px solid #c0392b; }
+
+/* Fila de subtotal de ambiente */
+.pdf-tr-subtotal td { background: #fafafa; border-top: 1px solid #ddd; }
+.pdf-td-subtotal-label { padding: 5px 10px; text-align: right; color: #888; font-size: 10px; }
+.pdf-td-subtotal-valor { padding: 5px 10px; text-align: right; font-family: monospace;
+                         font-weight: 700; font-size: 11px; color: #2c2c2c; }
+
+/* --- Barra de total general --- */
+/* ACOTACIÓN PARA R.P.: El fondo rojo tierra es la propuesta inicial.
+   Confirmar si corresponde al estilo definitivo del documento. */
+.pdf-total-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #c0392b;
+  color: #fff;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  border-radius: 2px;
+}
+
+.pdf-total-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.pdf-total-valor {
+  font-family: monospace;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+/* --- Condiciones al pie --- */
+.pdf-condiciones {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+  margin-bottom: 20px;
+}
+
+.pdf-condiciones-titulo {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #c0392b;
+  margin-bottom: 10px;
+}
+
+.pdf-condiciones-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-cond-item {
+  font-size: 9px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.pdf-cond-item strong {
+  color: #2c2c2c;
+}
+
+/* --- Footer del PDF --- */
+.pdf-footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 10px;
+  font-size: 9px;
+  color: #aaa;
+}
+
+/* ============================================================
+   @media print — por si el usuario imprime directo desde el
+   browser (sin usar html2pdf). Mantiene el layout limpio.
+   ============================================================ */
+@media print {
+  #login-screen,
+  #app-shell { display: none !important; }
+
+  .pdf-presupuesto {
+    width: 100%;
+    padding: 0;
+  }
+
+  .pdf-total-bar {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .pdf-thead-row {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
